@@ -1,0 +1,63 @@
+{
+  "stage": "planning",
+  "request": {
+    "model": "jev-latest",
+    "state": {
+      "goal": "Small maintainable portfolio demo for a venture analyst. Three assumptions, fictional startup sources, visible contradictions, next useful question, a new free-text note updates the assessment.",
+      "plan": "One TypeScript app, server-only Jev relation judgments per source and assumption; deterministic conflict-preserving aggregation and authored next questions; no uploads, auth system, database or agents. Fictional sources labeled. Preserve old results during errors, show source text.",
+      "alternatives": {
+        "bounded": "Prepared fictional case + free text; one end-to-end flow.",
+        "broad": "Arbitrary PDF upload, multi-startup CRM and autonomous research."
+      }
+    },
+    "questions": {
+      "scope": {
+        "type": "choice",
+        "instructions": "Which option in `alternatives` better satisfies `goal` with minimal code?",
+        "criteria": {
+          "bounded": null,
+          "broad": null
+        }
+      },
+      "risk": {
+        "type": "choice",
+        "instructions": "Which failure is most important to prevent in `plan` given `goal`?",
+        "criteria": {
+          "false_verification": "Presenting a source assertion as a verified business fact.",
+          "lack_of_pdf": "Not supporting arbitrary PDFs.",
+          "lack_of_crm": "Not offering many startups."
+        }
+      }
+    }
+  },
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "scope": {
+        "type": "choice",
+        "choice": "bounded",
+        "confidence": 1.0,
+        "probabilities": {
+          "bounded": 1.0,
+          "broad": 0.0
+        }
+      },
+      "risk": {
+        "type": "choice",
+        "choice": "false_verification",
+        "confidence": 1.0,
+        "probabilities": {
+          "lack_of_crm": 0.0,
+          "lack_of_pdf": 0.0,
+          "false_verification": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 550,
+      "output_tokens": 78
+    }
+  },
+  "elapsed_ms": 1030,
+  "note": "Jev advisory judgments, not approval or proof of implementation."
+}

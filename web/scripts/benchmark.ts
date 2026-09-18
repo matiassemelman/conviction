@@ -5,7 +5,7 @@ import { evaluateOpenAI } from '../lib/server/openai.ts';
 import { assumptions, baseSources } from '../lib/case.ts';
 import { models, modelIds, estimateCost } from '../lib/comparison.ts';
 import type { ModelId } from '../lib/comparison.ts';
-import { summarizeBenchmark } from '../lib/benchmark.ts';
+import { benchmarkSample, summarizeBenchmark } from '../lib/benchmark.ts';
 import type { BenchmarkReport, BenchmarkSample } from '../lib/benchmark.ts';
 import type { Evaluate, Relation } from '../lib/assessment.ts';
 import { addUsage } from '../lib/trace.ts';
@@ -81,15 +81,7 @@ for (let repetition = 0; repetition < 3; repetition++) {
     }
     for (const c of cases) {
       const span = spans.find((s) => s.sourceId === c.id);
-      const answer = span?.response?.answers.find(
-        (a) => a.assumptionId === c.id,
-      );
-      samples[id].push({
-        id: c.id,
-        expected: c.expected,
-        actual: answer?.relation,
-        durationMs: span?.durationMs ?? 0,
-      });
+      samples[id].push(benchmarkSample({ id: c.id, expected: c.expected }, span));
       if (span?.response) actualModels[id].add(span.response.model);
       const usage = span?.response?.usage ?? span?.reportedUsage;
       if (usage) addUsage(totals[id], usage);

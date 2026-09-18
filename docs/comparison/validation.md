@@ -12,7 +12,7 @@
 Zero failed benchmark calls. Repeated cases are not 48 independent examples. Labels were prepared by an agent and inspected during implementation, not independently validated by a human domain expert. The accuracy ceiling is inconclusive about relative general quality. Timing includes network and validation, not model-only execution. A one-question benchmark request differs from the app's three-question source request. Cost is estimated from reported tokens and public rates checked September 18, not invoices. Rates and links are in `web/lib/comparison.ts`. Full traces are in `receipts.json`; UI summary and individual outputs are in `web/evaluation/results.json`.
 
 ## Verification
-- 32 deterministic tests, lint, typecheck and Next.js production build pass.
+- 33 deterministic tests, lint, typecheck and Next.js production build pass.
 - Real browser comparison on the three-source case: Jev and Luna completed; Terra had a real 20-second source timeout. Successful results remained inspectable, Terra showed partial usage and a failed trace. Reset cleared all comparison output.
 - Adding the fictional activity note completed Jev analysis on four sources and changed weekly usage to supported, retaining the original evidence.
 - Four-source live comparison: all models completed (Jev 3.13 s, Luna 4.05 s, Terra 5.54 s), all identified supported weekly usage. Jev retried one request and correctly showed incomplete cost.
@@ -20,3 +20,6 @@ Zero failed benchmark calls. Repeated cases are not 48 independent examples. Lab
 
 ## Architecture and deployment
 Small shared provider transport and rubric, Jev and OpenAI adapters, deterministic comparison/cost modules, and a separate display component reusing the trace UI. No automatic model substitution. Vercel Authentication is configured for all deployments. Server environment variables are encrypted in Vercel and excluded from source uploads. Old Sites deployment remains unchanged.
+
+## Final review
+AI Hero two-axis review of dfa640a..1a97809 independently identified the same P2: future benchmark runs with early failure counted never-sent cases as API failures. Added explicit completed/failed/unmeasured/unavailable sample states, attempted counts and separate UI reporting, with a regression test. Existing 144 successful measured answers, costs and timings are unchanged; sample statuses were added from their verified receipts. No new live benchmark was run for this correction.

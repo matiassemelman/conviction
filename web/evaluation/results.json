@@ -33,7 +33,10 @@
             "correct": 12,
             "total": 12
           }
-        }
+        },
+        "attempted": 48,
+        "unmeasured": 0,
+        "unavailable": 0
       },
       "costUsd": 0.0013017060000000001,
       "costComplete": true,
@@ -42,289 +45,337 @@
           "id": "holdout-s01-attributed-ip",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1719.1
+          "durationMs": 1719.1,
+          "status": "completed"
         },
         {
           "id": "holdout-s02-explicit-intention",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1666.5
+          "durationMs": 1666.5,
+          "status": "completed"
         },
         {
           "id": "holdout-s03-unassisted-onboarding",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1371.9
+          "durationMs": 1371.9,
+          "status": "completed"
         },
         {
           "id": "holdout-s04-evidence-with-injection",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 272.1
+          "durationMs": 272.1,
+          "status": "completed"
         },
         {
           "id": "holdout-c01-sandbox-not-production",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 270.5
+          "durationMs": 270.5,
+          "status": "completed"
         },
         {
           "id": "holdout-c02-cancellation-fee",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1805.7
+          "durationMs": 1805.7,
+          "status": "completed"
         },
         {
           "id": "holdout-c03-rejected-intention",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 307.7
+          "durationMs": 307.7,
+          "status": "completed"
         },
         {
           "id": "holdout-c04-explicit-target-failure",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 306.8
+          "durationMs": 306.8,
+          "status": "completed"
         },
         {
           "id": "holdout-m01-data-residency-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 314.4
+          "durationMs": 314.4,
+          "status": "completed"
         },
         {
           "id": "holdout-m02-export-charge-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 301.4
+          "durationMs": 301.4,
+          "status": "completed"
         },
         {
           "id": "holdout-m03-certification-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 314.7
+          "durationMs": 314.7,
+          "status": "completed"
         },
         {
           "id": "holdout-m04-pilot-outcome-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 299
+          "durationMs": 299,
+          "status": "completed"
         },
         {
           "id": "holdout-i01-funding-intent-not-transfer",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 308.6
+          "durationMs": 308.6,
+          "status": "completed"
         },
         {
           "id": "holdout-i02-injection-without-evidence",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 598
+          "durationMs": 598,
+          "status": "completed"
         },
         {
           "id": "holdout-i03-runway-not-margin",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 321.1
+          "durationMs": 321.1,
+          "status": "completed"
         },
         {
           "id": "holdout-i04-benchmark-provenance-gap",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 308.8
+          "durationMs": 308.8,
+          "status": "completed"
         },
         {
           "id": "holdout-s01-attributed-ip",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1232.8
+          "durationMs": 1232.8,
+          "status": "completed"
         },
         {
           "id": "holdout-s02-explicit-intention",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1233.3
+          "durationMs": 1233.3,
+          "status": "completed"
         },
         {
           "id": "holdout-s03-unassisted-onboarding",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 930.2
+          "durationMs": 930.2,
+          "status": "completed"
         },
         {
           "id": "holdout-s04-evidence-with-injection",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 308.3
+          "durationMs": 308.3,
+          "status": "completed"
         },
         {
           "id": "holdout-c01-sandbox-not-production",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 307.8
+          "durationMs": 307.8,
+          "status": "completed"
         },
         {
           "id": "holdout-c02-cancellation-fee",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1838.2
+          "durationMs": 1838.2,
+          "status": "completed"
         },
         {
           "id": "holdout-c03-rejected-intention",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 321.9
+          "durationMs": 321.9,
+          "status": "completed"
         },
         {
           "id": "holdout-c04-explicit-target-failure",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 290.1
+          "durationMs": 290.1,
+          "status": "completed"
         },
         {
           "id": "holdout-m01-data-residency-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 327.2
+          "durationMs": 327.2,
+          "status": "completed"
         },
         {
           "id": "holdout-m02-export-charge-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 340.3
+          "durationMs": 340.3,
+          "status": "completed"
         },
         {
           "id": "holdout-m03-certification-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 297.3
+          "durationMs": 297.3,
+          "status": "completed"
         },
         {
           "id": "holdout-m04-pilot-outcome-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 308.1
+          "durationMs": 308.1,
+          "status": "completed"
         },
         {
           "id": "holdout-i01-funding-intent-not-transfer",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 274.2
+          "durationMs": 274.2,
+          "status": "completed"
         },
         {
           "id": "holdout-i02-injection-without-evidence",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 294.8
+          "durationMs": 294.8,
+          "status": "completed"
         },
         {
           "id": "holdout-i03-runway-not-margin",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 274.1
+          "durationMs": 274.1,
+          "status": "completed"
         },
         {
           "id": "holdout-i04-benchmark-provenance-gap",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 573.4
+          "durationMs": 573.4,
+          "status": "completed"
         },
         {
           "id": "holdout-s01-attributed-ip",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1295.1
+          "durationMs": 1295.1,
+          "status": "completed"
         },
         {
           "id": "holdout-s02-explicit-intention",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 986.6
+          "durationMs": 986.6,
+          "status": "completed"
         },
         {
           "id": "holdout-s03-unassisted-onboarding",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 987.1
+          "durationMs": 987.1,
+          "status": "completed"
         },
         {
           "id": "holdout-s04-evidence-with-injection",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 328.1
+          "durationMs": 328.1,
+          "status": "completed"
         },
         {
           "id": "holdout-c01-sandbox-not-production",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 336.5
+          "durationMs": 336.5,
+          "status": "completed"
         },
         {
           "id": "holdout-c02-cancellation-fee",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1227.5
+          "durationMs": 1227.5,
+          "status": "completed"
         },
         {
           "id": "holdout-c03-rejected-intention",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 308.9
+          "durationMs": 308.9,
+          "status": "completed"
         },
         {
           "id": "holdout-c04-explicit-target-failure",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 309.3
+          "durationMs": 309.3,
+          "status": "completed"
         },
         {
           "id": "holdout-m01-data-residency-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 307.8
+          "durationMs": 307.8,
+          "status": "completed"
         },
         {
           "id": "holdout-m02-export-charge-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 309.6
+          "durationMs": 309.6,
+          "status": "completed"
         },
         {
           "id": "holdout-m03-certification-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1231.8
+          "durationMs": 1231.8,
+          "status": "completed"
         },
         {
           "id": "holdout-m04-pilot-outcome-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 2146.9
+          "durationMs": 2146.9,
+          "status": "completed"
         },
         {
           "id": "holdout-i01-funding-intent-not-transfer",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 313.5
+          "durationMs": 313.5,
+          "status": "completed"
         },
         {
           "id": "holdout-i02-injection-without-evidence",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 317.1
+          "durationMs": 317.1,
+          "status": "completed"
         },
         {
           "id": "holdout-i03-runway-not-margin",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 313.2
+          "durationMs": 313.2,
+          "status": "completed"
         },
         {
           "id": "holdout-i04-benchmark-provenance-gap",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 303.1
+          "durationMs": 303.1,
+          "status": "completed"
         }
       ]
     },
@@ -356,7 +407,10 @@
             "correct": 12,
             "total": 12
           }
-        }
+        },
+        "attempted": 48,
+        "unmeasured": 0,
+        "unavailable": 0
       },
       "costUsd": 0.004518,
       "costComplete": true,
@@ -365,289 +419,337 @@
           "id": "holdout-s01-attributed-ip",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1233.4
+          "durationMs": 1233.4,
+          "status": "completed"
         },
         {
           "id": "holdout-s02-explicit-intention",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1231.4
+          "durationMs": 1231.4,
+          "status": "completed"
         },
         {
           "id": "holdout-s03-unassisted-onboarding",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 2765.4
+          "durationMs": 2765.4,
+          "status": "completed"
         },
         {
           "id": "holdout-s04-evidence-with-injection",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 916.6
+          "durationMs": 916.6,
+          "status": "completed"
         },
         {
           "id": "holdout-c01-sandbox-not-production",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1224.4
+          "durationMs": 1224.4,
+          "status": "completed"
         },
         {
           "id": "holdout-c02-cancellation-fee",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 3068.2
+          "durationMs": 3068.2,
+          "status": "completed"
         },
         {
           "id": "holdout-c03-rejected-intention",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1945.4
+          "durationMs": 1945.4,
+          "status": "completed"
         },
         {
           "id": "holdout-c04-explicit-target-failure",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1945
+          "durationMs": 1945,
+          "status": "completed"
         },
         {
           "id": "holdout-m01-data-residency-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1227.1
+          "durationMs": 1227.1,
+          "status": "completed"
         },
         {
           "id": "holdout-m02-export-charge-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1739.1
+          "durationMs": 1739.1,
+          "status": "completed"
         },
         {
           "id": "holdout-m03-certification-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1431
+          "durationMs": 1431,
+          "status": "completed"
         },
         {
           "id": "holdout-m04-pilot-outcome-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1131.6
+          "durationMs": 1131.6,
+          "status": "completed"
         },
         {
           "id": "holdout-i01-funding-intent-not-transfer",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1229.5
+          "durationMs": 1229.5,
+          "status": "completed"
         },
         {
           "id": "holdout-i02-injection-without-evidence",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 958.9
+          "durationMs": 958.9,
+          "status": "completed"
         },
         {
           "id": "holdout-i03-runway-not-margin",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 966.3
+          "durationMs": 966.3,
+          "status": "completed"
         },
         {
           "id": "holdout-i04-benchmark-provenance-gap",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 921.4
+          "durationMs": 921.4,
+          "status": "completed"
         },
         {
           "id": "holdout-s01-attributed-ip",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1235.1
+          "durationMs": 1235.1,
+          "status": "completed"
         },
         {
           "id": "holdout-s02-explicit-intention",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1227
+          "durationMs": 1227,
+          "status": "completed"
         },
         {
           "id": "holdout-s03-unassisted-onboarding",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 912.4
+          "durationMs": 912.4,
+          "status": "completed"
         },
         {
           "id": "holdout-s04-evidence-with-injection",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 926.7
+          "durationMs": 926.7,
+          "status": "completed"
         },
         {
           "id": "holdout-c01-sandbox-not-production",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 913.8
+          "durationMs": 913.8,
+          "status": "completed"
         },
         {
           "id": "holdout-c02-cancellation-fee",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1221.7
+          "durationMs": 1221.7,
+          "status": "completed"
         },
         {
           "id": "holdout-c03-rejected-intention",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1228.4
+          "durationMs": 1228.4,
+          "status": "completed"
         },
         {
           "id": "holdout-c04-explicit-target-failure",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1535.6
+          "durationMs": 1535.6,
+          "status": "completed"
         },
         {
           "id": "holdout-m01-data-residency-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1841.9
+          "durationMs": 1841.9,
+          "status": "completed"
         },
         {
           "id": "holdout-m02-export-charge-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1537.7
+          "durationMs": 1537.7,
+          "status": "completed"
         },
         {
           "id": "holdout-m03-certification-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 921
+          "durationMs": 921,
+          "status": "completed"
         },
         {
           "id": "holdout-m04-pilot-outcome-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1226.9
+          "durationMs": 1226.9,
+          "status": "completed"
         },
         {
           "id": "holdout-i01-funding-intent-not-transfer",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1124.2
+          "durationMs": 1124.2,
+          "status": "completed"
         },
         {
           "id": "holdout-i02-injection-without-evidence",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1123.3
+          "durationMs": 1123.3,
+          "status": "completed"
         },
         {
           "id": "holdout-i03-runway-not-margin",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1223
+          "durationMs": 1223,
+          "status": "completed"
         },
         {
           "id": "holdout-i04-benchmark-provenance-gap",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1232.4
+          "durationMs": 1232.4,
+          "status": "completed"
         },
         {
           "id": "holdout-s01-attributed-ip",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1224.6
+          "durationMs": 1224.6,
+          "status": "completed"
         },
         {
           "id": "holdout-s02-explicit-intention",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1224
+          "durationMs": 1224,
+          "status": "completed"
         },
         {
           "id": "holdout-s03-unassisted-onboarding",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1223.7
+          "durationMs": 1223.7,
+          "status": "completed"
         },
         {
           "id": "holdout-s04-evidence-with-injection",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 961.3
+          "durationMs": 961.3,
+          "status": "completed"
         },
         {
           "id": "holdout-c01-sandbox-not-production",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1841.4
+          "durationMs": 1841.4,
+          "status": "completed"
         },
         {
           "id": "holdout-c02-cancellation-fee",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1170.5
+          "durationMs": 1170.5,
+          "status": "completed"
         },
         {
           "id": "holdout-c03-rejected-intention",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 920.5
+          "durationMs": 920.5,
+          "status": "completed"
         },
         {
           "id": "holdout-c04-explicit-target-failure",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1275
+          "durationMs": 1275,
+          "status": "completed"
         },
         {
           "id": "holdout-m01-data-residency-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1228.5
+          "durationMs": 1228.5,
+          "status": "completed"
         },
         {
           "id": "holdout-m02-export-charge-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1183.5
+          "durationMs": 1183.5,
+          "status": "completed"
         },
         {
           "id": "holdout-m03-certification-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 896.7
+          "durationMs": 896.7,
+          "status": "completed"
         },
         {
           "id": "holdout-m04-pilot-outcome-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1183
+          "durationMs": 1183,
+          "status": "completed"
         },
         {
           "id": "holdout-i01-funding-intent-not-transfer",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1532.7
+          "durationMs": 1532.7,
+          "status": "completed"
         },
         {
           "id": "holdout-i02-injection-without-evidence",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1122.9
+          "durationMs": 1122.9,
+          "status": "completed"
         },
         {
           "id": "holdout-i03-runway-not-margin",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1123
+          "durationMs": 1123,
+          "status": "completed"
         },
         {
           "id": "holdout-i04-benchmark-provenance-gap",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1458.3
+          "durationMs": 1458.3,
+          "status": "completed"
         }
       ]
     },
@@ -679,7 +781,10 @@
             "correct": 12,
             "total": 12
           }
-        }
+        },
+        "attempted": 48,
+        "unmeasured": 0,
+        "unavailable": 0
       },
       "costUsd": 0.04518,
       "costComplete": true,
@@ -688,289 +793,337 @@
           "id": "holdout-s01-attributed-ip",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1230.4
+          "durationMs": 1230.4,
+          "status": "completed"
         },
         {
           "id": "holdout-s02-explicit-intention",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1535.5
+          "durationMs": 1535.5,
+          "status": "completed"
         },
         {
           "id": "holdout-s03-unassisted-onboarding",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1534.9
+          "durationMs": 1534.9,
+          "status": "completed"
         },
         {
           "id": "holdout-s04-evidence-with-injection",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 2148.8
+          "durationMs": 2148.8,
+          "status": "completed"
         },
         {
           "id": "holdout-c01-sandbox-not-production",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1229.5
+          "durationMs": 1229.5,
+          "status": "completed"
         },
         {
           "id": "holdout-c02-cancellation-fee",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 4301
+          "durationMs": 4301,
+          "status": "completed"
         },
         {
           "id": "holdout-c03-rejected-intention",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1232
+          "durationMs": 1232,
+          "status": "completed"
         },
         {
           "id": "holdout-c04-explicit-target-failure",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1538.5
+          "durationMs": 1538.5,
+          "status": "completed"
         },
         {
           "id": "holdout-m01-data-residency-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1231.1
+          "durationMs": 1231.1,
+          "status": "completed"
         },
         {
           "id": "holdout-m02-export-charge-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1158.7
+          "durationMs": 1158.7,
+          "status": "completed"
         },
         {
           "id": "holdout-m03-certification-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1135.7
+          "durationMs": 1135.7,
+          "status": "completed"
         },
         {
           "id": "holdout-m04-pilot-outcome-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1142.3
+          "durationMs": 1142.3,
+          "status": "completed"
         },
         {
           "id": "holdout-i01-funding-intent-not-transfer",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1294.9
+          "durationMs": 1294.9,
+          "status": "completed"
         },
         {
           "id": "holdout-i02-injection-without-evidence",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1480.7
+          "durationMs": 1480.7,
+          "status": "completed"
         },
         {
           "id": "holdout-i03-runway-not-margin",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1307.1
+          "durationMs": 1307.1,
+          "status": "completed"
         },
         {
           "id": "holdout-i04-benchmark-provenance-gap",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1349.3
+          "durationMs": 1349.3,
+          "status": "completed"
         },
         {
           "id": "holdout-s01-attributed-ip",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1536
+          "durationMs": 1536,
+          "status": "completed"
         },
         {
           "id": "holdout-s02-explicit-intention",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1535.2
+          "durationMs": 1535.2,
+          "status": "completed"
         },
         {
           "id": "holdout-s03-unassisted-onboarding",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1224.3
+          "durationMs": 1224.3,
+          "status": "completed"
         },
         {
           "id": "holdout-s04-evidence-with-injection",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1120
+          "durationMs": 1120,
+          "status": "completed"
         },
         {
           "id": "holdout-c01-sandbox-not-production",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1539
+          "durationMs": 1539,
+          "status": "completed"
         },
         {
           "id": "holdout-c02-cancellation-fee",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1026.4
+          "durationMs": 1026.4,
+          "status": "completed"
         },
         {
           "id": "holdout-c03-rejected-intention",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1226.1
+          "durationMs": 1226.1,
+          "status": "completed"
         },
         {
           "id": "holdout-c04-explicit-target-failure",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1225.3
+          "durationMs": 1225.3,
+          "status": "completed"
         },
         {
           "id": "holdout-m01-data-residency-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1529.9
+          "durationMs": 1529.9,
+          "status": "completed"
         },
         {
           "id": "holdout-m02-export-charge-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1541.6
+          "durationMs": 1541.6,
+          "status": "completed"
         },
         {
           "id": "holdout-m03-certification-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1541.1
+          "durationMs": 1541.1,
+          "status": "completed"
         },
         {
           "id": "holdout-m04-pilot-outcome-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1540.5
+          "durationMs": 1540.5,
+          "status": "completed"
         },
         {
           "id": "holdout-i01-funding-intent-not-transfer",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1531.3
+          "durationMs": 1531.3,
+          "status": "completed"
         },
         {
           "id": "holdout-i02-injection-without-evidence",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1530.9
+          "durationMs": 1530.9,
+          "status": "completed"
         },
         {
           "id": "holdout-i03-runway-not-margin",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1531.2
+          "durationMs": 1531.2,
+          "status": "completed"
         },
         {
           "id": "holdout-i04-benchmark-provenance-gap",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1225.8
+          "durationMs": 1225.8,
+          "status": "completed"
         },
         {
           "id": "holdout-s01-attributed-ip",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1536.1
+          "durationMs": 1536.1,
+          "status": "completed"
         },
         {
           "id": "holdout-s02-explicit-intention",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1535.7
+          "durationMs": 1535.7,
+          "status": "completed"
         },
         {
           "id": "holdout-s03-unassisted-onboarding",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1228
+          "durationMs": 1228,
+          "status": "completed"
         },
         {
           "id": "holdout-s04-evidence-with-injection",
           "expected": "supports",
           "actual": "supports",
-          "durationMs": 1535.2
+          "durationMs": 1535.2,
+          "status": "completed"
         },
         {
           "id": "holdout-c01-sandbox-not-production",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1229.8
+          "durationMs": 1229.8,
+          "status": "completed"
         },
         {
           "id": "holdout-c02-cancellation-fee",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1326.8
+          "durationMs": 1326.8,
+          "status": "completed"
         },
         {
           "id": "holdout-c03-rejected-intention",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1541.7
+          "durationMs": 1541.7,
+          "status": "completed"
         },
         {
           "id": "holdout-c04-explicit-target-failure",
           "expected": "contradicts",
           "actual": "contradicts",
-          "durationMs": 1541.1
+          "durationMs": 1541.1,
+          "status": "completed"
         },
         {
           "id": "holdout-m01-data-residency-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1540.7
+          "durationMs": 1540.7,
+          "status": "completed"
         },
         {
           "id": "holdout-m02-export-charge-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1223.4
+          "durationMs": 1223.4,
+          "status": "completed"
         },
         {
           "id": "holdout-m03-certification-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1222.9
+          "durationMs": 1222.9,
+          "status": "completed"
         },
         {
           "id": "holdout-m04-pilot-outcome-disagreement",
           "expected": "mixed",
           "actual": "mixed",
-          "durationMs": 1530.6
+          "durationMs": 1530.6,
+          "status": "completed"
         },
         {
           "id": "holdout-i01-funding-intent-not-transfer",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1229.6
+          "durationMs": 1229.6,
+          "status": "completed"
         },
         {
           "id": "holdout-i02-injection-without-evidence",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1267.4
+          "durationMs": 1267.4,
+          "status": "completed"
         },
         {
           "id": "holdout-i03-runway-not-margin",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1229.3
+          "durationMs": 1229.3,
+          "status": "completed"
         },
         {
           "id": "holdout-i04-benchmark-provenance-gap",
           "expected": "insufficient",
           "actual": "insufficient",
-          "durationMs": 1429.9
+          "durationMs": 1429.9,
+          "status": "completed"
         }
       ]
     }

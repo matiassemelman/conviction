@@ -55,12 +55,12 @@ void test('a failed model preserves successful peer results without leaking raw 
   assert.ok(!JSON.stringify(result).includes('secret provider body'));
 });
 
-import { summarizeBenchmark } from '../lib/benchmark.ts';
+import { benchmarkSample, summarizeBenchmark } from '../lib/benchmark.ts';
 void test('benchmark counts failed judgments as failures, not correct answers, and reports measured percentiles', () => {
   const samples = [
-    { id: 'one', expected: 'supports', actual: 'supports', durationMs: 100 },
-    { id: 'two', expected: 'contradicts', actual: 'supports', durationMs: 200 },
-    { id: 'three', expected: 'supports', durationMs: 900 },
+    { status: 'completed', id: 'one', expected: 'supports', actual: 'supports', durationMs: 100 },
+    { status: 'completed', id: 'two', expected: 'contradicts', actual: 'supports', durationMs: 200 },
+    { status: 'failed', id: 'three', expected: 'supports', durationMs: 900 },
   ] as const;
   const result = summarizeBenchmark([...samples]);
   assert.equal(result.correct, 1);
@@ -99,4 +99,24 @@ void test('comparison request validation rejects foreign origins and oversized n
     400,
   );
   assert.equal(calls, 0);
+});
+
+void test('benchmark keeps never-sent and unavailable cases out of API attempts and failures', () => {
+  const item = { id: 'claim', expected: 'supports' as const };
+  const unmeasured = benchmarkSample(item);
+  const unavailable = benchmarkSample(item, {
+    sourceId: 'claim', title: 'Claim', status: 'failed', startMs: 0,
+    durationMs: 0, attempts: [], errorCode: 'not_configured',
+  });
+  const failed = benchmarkSample(item, {
+    sourceId: 'claim', title: 'Claim', status: 'failed', startMs: 0,
+    durationMs: 10, attempts: [{number: 1, startMs: 0, durationMs: 10, outcome: 'failed', httpStatus: 500}],
+  });
+  const summary = summarizeBenchmark([failed, unavailable, ...Array.from({length: 13}, () => unmeasured)]);
+  assert.equal(summary.total, 15);
+  assert.equal(summary.attempted, 1);
+  assert.equal(summary.failed, 1);
+  assert.equal(summary.unavailable, 1);
+  assert.equal(summary.unmeasured, 13);
+  assert.equal(summary.medianMs, null);
 });

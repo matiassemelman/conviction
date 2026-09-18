@@ -189,6 +189,7 @@ export function ModelComparison({
                 <th scope="col">Median</th>
                 <th scope="col">p95</th>
                 <th scope="col">API failures</th>
+                <th scope="col">Not measured / unavailable</th>
                 <th scope="col">Estimated total</th>
               </tr>
             </thead>
@@ -197,15 +198,16 @@ export function ModelComparison({
                 <tr key={model.id}>
                   <th scope="row">{models[model.id].label}</th>
                   <td>
-                    {model.summary.correct}/{model.summary.total} (
+                    {model.summary.correct}/{model.summary.attempted} (
                     {Math.round(
-                      (model.summary.correct / model.summary.total) * 100,
+                      (model.summary.correct / (model.summary.attempted || 1)) * 100,
                     )}
                     %)
                   </td>
                   <td>{seconds(model.summary.medianMs)}</td>
                   <td>{seconds(model.summary.p95Ms)}</td>
                   <td>{model.summary.failed}</td>
+                  <td>{model.summary.unmeasured} / {model.summary.unavailable}</td>
                   <td>
                     {money(model.costUsd)}
                     {!model.costComplete && ' · partial'}
@@ -218,9 +220,7 @@ export function ModelComparison({
         <p className="source-meta">
           p95: 95% of successful calls finished within this time. Small local
           sample, including network time; not a general accuracy or
-          production-speed guarantee. Cost covers all{' '}
-          {benchmark.distinctCases * benchmark.repetitions} attempted judgments
-          per model.
+          production-speed guarantee. Costs cover reported usage only. Never-sent cases are excluded from API attempts and failures.
         </p>
         <details className="benchmark-method">
           <summary>Method, labels and individual results</summary>
@@ -267,7 +267,7 @@ export function ModelComparison({
                               className={`benchmark-answer ${s.actual === s.expected ? '' : 'mismatch'}`}
                               key={i}
                             >
-                              {s.actual ?? 'failed'}
+                              {s.actual ?? s.status}
                             </span>
                           ))}
                       </td>

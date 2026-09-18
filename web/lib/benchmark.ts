@@ -1,11 +1,26 @@
 import type { Relation } from './assessment.ts';
 import type { ModelId } from './comparison.ts';
+import type { SourceTrace } from './trace.ts';
 export type BenchmarkSample = {
   id: string;
   expected: Relation;
+  status: 'completed' | 'failed' | 'unmeasured' | 'unavailable';
   actual?: Relation;
   durationMs: number;
 };
+export function benchmarkSample(
+  item: { id: string; expected: Relation },
+  span?: SourceTrace,
+): BenchmarkSample {
+  const answer = span?.response?.answers.find((a) => a.assumptionId === item.id);
+  return {
+    ...item,
+    status: answer ? 'completed' : span?.errorCode === 'not_configured'
+      ? 'unavailable' : span?.attempts.length ? 'failed' : 'unmeasured',
+    actual: answer?.relation,
+    durationMs: span?.durationMs ?? 0,
+  };
+}
 export function summarizeBenchmark(samples: BenchmarkSample[]) {
   const completed = samples.filter((s) => s.actual !== undefined);
   const times = completed.map((s) => s.durationMs).sort((a, b) => a - b);
@@ -27,7 +42,10 @@ export function summarizeBenchmark(samples: BenchmarkSample[]) {
   return {
     total: samples.length,
     correct: completed.filter((s) => s.actual === s.expected).length,
-    failed: samples.length - completed.length,
+    attempted: samples.filter((s) => s.status === 'completed' || s.status === 'failed').length,
+    failed: samples.filter((s) => s.status === 'failed').length,
+    unmeasured: samples.filter((s) => s.status === 'unmeasured').length,
+    unavailable: samples.filter((s) => s.status === 'unavailable').length,
     medianMs: times.length
       ? times.length % 2
         ? times[middle]

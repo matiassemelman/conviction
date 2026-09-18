@@ -1,8 +1,52 @@
 # Conviction
 
-Private deployment: Vercel (current URL in CURRENT.md). Previous Sites demo remains an older trace-only release.
+[Open the private demo](https://conviction-kappa.vercel.app) · [Current state](CURRENT.md) · [Evaluation evidence](docs/comparison/validation.md)
+
+The demo requires a Vercel session with project access.
 
 A small venture diligence workspace with TypeSafe Jev and a side-by-side comparison against GPT-5.6 Luna and Terra. Inspect three assumptions about a fictional startup, read the sources behind each judgment, surface conflicts and add a note to see what changes.
+
+## How we built it
+
+Conviction grew out of a conversation between Matias and Codex on September 16–18, 2026. Matias wanted a small MVP he could show, with minimal code and a clear structure. We chose a venture-analysis workspace: inspect a startup’s claims, preserve conflicting sources and decide what to ask next.
+
+Matias set the direction and asked for the next capabilities as the demo took shape. Codex turned those decisions into specs, code, tests and deployments. Separate agents reviewed the implementation against the spec and project standards. At Matias’s request, Jev also contributed bounded judgments during planning, design and review; those outputs remain advisory evidence alongside the actual tests and browser checks.
+
+```text
+Conversation and scope
+    ↓
+Fictional case + live Jev judgments
+    ↓  Browser testing exposed evidence leaking between sources
+One source per request
+    ↓
+Inspectable execution trace
+    ↓
+Same-case comparison: Jev / Luna / Terra
+    ↓  Frozen labels, repeated measurements, independent review
+Private Vercel release
+```
+
+### The conversation behind the changes
+
+These are summaries of the requests and decisions, rather than a transcript.
+
+| What came up | What we built or changed |
+| --- | --- |
+| Keep the MVP small enough to demonstrate and understand. | One fictional startup, three assumptions, original source text and a bounded note input. Follow-up questions come from application rules. |
+| Use Jev in the product and involve it throughout development. | A server-side adapter for typed source judgments, plus separate advisory receipts for development stages. Credentials stay outside the repository and browser. |
+| The analysis finished too quickly to see what happened. | A trace that stays visible after completion: actual request bodies, validated responses, timings, retries and the rules applied to the answers. |
+| Compare Jev with Luna and Terra on cost, latency and correctness. | The same source boundaries and rubric for all three, independent results and failures, and a separate labeled benchmark. Matias enabled access to the requested OpenAI models before evaluation. |
+| Deploy the comparison on Vercel. | A standard Next.js runtime with private deployment access and real production API checks. The earlier Sites release remains separate. |
+
+### What testing changed
+
+The first implementation put several sources into shared request context. Browser testing showed judgments borrowing evidence from another source. We changed the request boundary: each source gets its own request, containing the three assumption questions, and added a regression test. The original statements remain visible even when they disagree. [MVP validation](docs/validation.md)
+
+The comparison review caught a different problem: after an early provider failure, the benchmark counted cases it had never sent as API failures. We separated completed, failed, unavailable and unmeasured cases. Both reviewers reproduced the correction. [Comparison review](docs/comparison/validation.md#final-review)
+
+The recorded evaluation finished with 48/48 label matches for each model across 16 synthetic cases repeated three times. Jev had the lowest median latency and estimated cost in that sample. That result leaves relative accuracy on harder or real diligence material open. The delivered version passed 33 deterministic tests; the reports distinguish those checks from model measurements and owner acceptance.
+
+We used the project-local AI Hero workflow for specifications, implementation and review. This README uses the compact structural views from HumanLayer’s [`visual-pr`](.agents/skills/visual-pr/SKILL.md) to explain the development. The conversation’s durable record is the [MVP spec](.scratch/mvp/spec.md), [trace spec](.scratch/trace/spec.md), [comparison spec](.scratch/comparison/spec.md) and their validation reports.
 
 ## Run locally
 

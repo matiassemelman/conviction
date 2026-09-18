@@ -77,7 +77,27 @@ void test('adding usage evidence highlights that change while retaining the paym
   ]);
   assert.match(
     describeReview(after.assessments[0], after.sources).headline,
-    /disagree about payments/,
+    /evidence about payments is conflicting/,
   );
   assert.deepEqual(after.sources.slice(0, 3), before.sources);
+});
+
+void test('an internally conflicting source is not described as disagreement between documents', async () => {
+  const result = await assessCase([], async (pairs) => ({
+    model: 'test-double',
+    judgments: pairs.map((pair) => ({
+      ...pair,
+      relation: pair.source.id === 'founder' ? 'mixed' : 'insufficient',
+    })),
+    usage: { input_tokens: 0, output_tokens: 0 },
+  }));
+  for (const assessment of result.assessments) {
+    const review = describeReview(assessment, result.sources);
+    assert.match(review.headline, /evidence.*conflicting/);
+    assert.doesNotMatch(review.headline, /sources disagree|documents disagree/);
+    assert.match(
+      review.explanation,
+      /Founder update contains conflicting evidence/,
+    );
+  }
 });

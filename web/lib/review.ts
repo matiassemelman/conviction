@@ -17,7 +17,7 @@ const headlines: Record<string, Record<Relation, string>> = {
     contradicts:
       'The sources challenge the claim that three customers have paid.',
     mixed:
-      'The documents disagree about payments. The claim remains unresolved.',
+      'The evidence about payments is conflicting. The claim remains unresolved.',
     insufficient:
       'The documents do not establish whether three customers have paid.',
   },
@@ -27,7 +27,7 @@ const headlines: Record<string, Record<Relation, string>> = {
     contradicts:
       'The sources challenge the claim that all three teams used the product every week.',
     mixed:
-      'The sources disagree about weekly usage. The claim remains unresolved.',
+      'The evidence about weekly usage is conflicting. The claim remains unresolved.',
     insufficient:
       'The documents do not establish weekly usage by all three teams.',
   },
@@ -37,7 +37,7 @@ const headlines: Record<string, Record<Relation, string>> = {
     contradicts:
       'The sources challenge the claim of a repeatable channel beyond the founder.',
     mixed:
-      'The sources disagree about acquisition. The claim remains unresolved.',
+      'The evidence about acquisition is conflicting. The claim remains unresolved.',
     insufficient:
       'The documents do not establish a repeatable channel beyond the founder.',
   },

@@ -166,16 +166,14 @@ export default function Home() {
               interviews.
             </p>
           </div>
-          {result && (
-            <Button
-              variant="outline"
-              className="secondary h-auto"
-              onClick={reset}
-              disabled={locked}
-            >
-              Reset case
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            className="secondary h-auto"
+            onClick={reset}
+            disabled={locked}
+          >
+            Reset case
+          </Button>
         </div>
         {previous && result && (
           <section className="review-changes" aria-labelledby="review-changes">

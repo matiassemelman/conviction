@@ -20,7 +20,11 @@ Base: 7ad5153. Scope and acceptance: [.scratch/guided-review/spec.md](../../.scr
 - Desktop and mobile visual checks passed. At the mobile test width, document clientWidth and scrollWidth both measured 375 CSS pixels. No browser console errors were recorded.
 
 ## Automated checks
-41 tests pass, including two new checks across assessment and presentation interfaces: summaries follow actual source identities/relations rather than an expected demo answer; added usage evidence changes the usage finding while preserving payment conflict and original sources. Typecheck and lint pass.
+42 tests pass, including three new checks across assessment and presentation interfaces: summaries follow actual source identities/relations rather than an expected demo answer; added usage evidence changes the usage finding while preserving payment conflict and original sources; an internally conflicting single source is not described as disagreement between documents. Typecheck and lint pass. The pre-review production build passed.
 
 ## Final review and deployment
-Pending final two-axis review and production verification. Technical QA is separate from owner acceptance of the new experience.
+Final two-axis review found one issue per axis, both fixed and independently closed:
+- Spec: Reset must remain available when comparison is used before the first analysis. It is now always visible and still locked during requests.
+- Standards: mixed evidence can arise within one source. The three mixed headlines now describe conflicting evidence without inventing disagreement between separate documents; a focused regression covers all three assumptions.
+
+Standards and Spec: 0 findings pending. Production verification remains pending. Technical QA is separate from owner acceptance of the new experience.

@@ -40,6 +40,7 @@ These are summaries of the requests and decisions, rather than a transcript.
 | Compare Jev with Luna and Terra on cost, latency and correctness. | The same source boundaries and rubric for all three, independent results and failures, and a separate labeled benchmark. Matias enabled access to the requested OpenAI models before evaluation. |
 | Deploy the comparison on Vercel. | A standard Next.js runtime, first released privately with real production API checks. The earlier Sites release remains separate. |
 | Let anyone try the sample and inspect its code. | Public demo and GitHub source, with shared live-usage limits and protected old deployment URLs. |
+| A first-time visitor sees an unexplained report after one click. | Start with a specific payment claim and the original sources; show the finding and its evidence before technical details, then explain what changes after a new note. |
 
 ### What testing changed
 
@@ -55,12 +56,13 @@ We used the project-local AI Hero workflow for specifications, implementation an
 
 Requires Node 24 and npm. From `web/`, run `npm ci`, copy `.env.example` to `.env.local`, set your TypeSafe and OpenAI keys plus the quota-store credentials there, and run `npm run dev`. Use the printed local URL. Never commit `.dev.vars` or `.env*` files.
 
-1. Click **Analyze with Jev**.
-2. Expand **Execution trace** to inspect timings, parallel requests, exact request bodies and validated Jev answers. Open **How the application used these answers** for the deterministic rules and before/after changes.
-3. Inspect the payment contradiction and the weekly-usage evidence gap.
-4. Select **Usage becomes a weekly habit**.
-5. Click **Use a fictional activity note**, then **Add note & analyze**.
-6. Inspect the changed assessment and original source trail.
+1. Read the question: **Have three Northstar customers paid?** The introduction explains the fictional company, the exact claim and the three source documents.
+2. Read the founder update, finance note and pilot interviews, then click **Review the evidence**.
+3. Inspect the finding, named source judgments and the question to ask next. The original quotations remain visible directly below.
+4. Under **Add information and review again**, load the fictional weekly-usage note. Read or edit it before submitting. It concerns usage, not payments.
+5. Click **Add note and review again**. **What changed in this review** compares each finding with the previous successful analysis. Added evidence does not erase the payment conflict.
+6. Open **Other questions about Northstar** to inspect weekly usage or acquisition. This selection does not make a model call.
+7. Open **How this result was produced** for the execution trace, or **Compare models using these sources** for live comparison and the recorded benchmark.
 
 The latest execution trace stays visible after fast runs and includes partial failures. It records observable events, not hidden model reasoning. Reported token usage is incomplete when requests fail or retry; credentials and authorization headers are excluded. Trace details live only in component memory and clear on reset or refresh. See [trace validation](docs/trace-validation.md).
 
@@ -68,7 +70,7 @@ Notes live only in browser memory and are sent to TypeSafe when you analyze, and
 
 ## Architecture
 
-`web/app/page.tsx` owns the interaction. `web/lib/assessment.ts` aggregates source judgments and selects authored follow-up questions. `web/lib/server/jev.ts` calls the official TypeSafe HTTP API, checks the typed response and limits each request to one source. `web/app/api/assess/route.ts` keeps credentials on the server.
+`web/app/page.tsx` owns the interaction. `web/components/review/evidence-review.tsx` renders the reusable claim, finding and original sources. `web/lib/review.ts` turns validated judgments into authored descriptions and before/after changes; it does not call a model or generate new factual claims. `web/lib/assessment.ts` aggregates source judgments and selects authored follow-up questions. `web/lib/server/jev.ts` calls the official TypeSafe HTTP API, checks the typed response and limits each request to one source. `web/app/api/assess/route.ts` keeps credentials on the server.
 
 Each source gets one request containing the three independent assumption questions. Up to three requests run concurrently, with a 40-second overall timeout. At most seven logical source evaluations (21 judgments) are needed; one retry per source on 429/529 permits at most 14 HTTP attempts (42 transmitted questions). Sources are never placed together in one provider request: browser QA caught cross-source contamination in the earlier batch design. At most four notes of 2000 characters are accepted; all existing sources remain visible. Comparison runs all three models independently with the same source grouping and concurrency. OpenAI uses the same relation rubric with strict structured output and reasoning disabled. A failed model does not erase another model’s result. Case data stays in browser memory. Redis stores usage counters only; there is no vector store or autonomous agent runtime.
 
@@ -76,7 +78,7 @@ The production alias is public. Preview and immutable deployment URLs remain pro
 
 ## Model comparison
 
-Click **Compare current case** to run Jev, Luna and Terra on the current sources. Each result has elapsed time, estimated USD cost and its own execution trace. Free-form cases show model agreement, not accuracy. Costs use reported input/cache/output tokens and dated public rates, not billing receipts; incomplete usage is labeled.
+Open **Compare models using these sources**, then click **Compare current case** to run Jev, Luna and Terra on the current sources. Each result has elapsed time, estimated USD cost and its own execution trace. Free-form cases show model agreement, not accuracy. Costs use reported input/cache/output tokens and dated public rates, not billing receipts; incomplete usage is labeled.
 
 The recorded benchmark uses 16 new synthetic cases, four per relation, frozen before the first run and repeated three times. All three models matched 48/48 labels. That ceiling on a small synthetic set does not establish equal general accuracy. Jev was faster by median and cheaper in this sample. See [method and results](docs/comparison/validation.md), [frozen labels](web/evaluation/holdout.json), and [raw receipts](docs/comparison/receipts.json).
 

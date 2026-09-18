@@ -23,7 +23,7 @@ export const assumptions: Assumption[] = [
       contradicts:
         'What needs to happen for a pilot to become a paying customer?',
       mixed:
-        'Why do the founder update and finance note disagree about payments?',
+        'What do payment records show as of September 15, 2026, and why do the sources disagree?',
       insufficient:
         'Has any customer actually paid, and what records show the payment?',
     },

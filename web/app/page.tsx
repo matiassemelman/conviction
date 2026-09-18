@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ModelComparison } from '@/components/comparison/model-comparison';
 import { ExecutionTrace } from '@/components/trace/execution-trace';
 import type { RunTrace } from '@/lib/trace';
@@ -7,15 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { assumptions, baseSources, sampleNote } from '@/lib/case';
 import { statusLabels } from '@/lib/assessment';
-import type { CaseResult, Relation } from '@/lib/assessment';
-const relationLabels: Record<Relation, string> = {
-  supports: 'Supports this claim',
-  contradicts: 'Contradicts this claim',
-  mixed: 'Mixed signals',
-  insufficient: 'Does not establish this claim',
-};
+import type { CaseResult } from '@/lib/assessment';
+import { EvidenceReview } from '@/components/review/evidence-review';
+import { describeChanges, relationLabels } from '@/lib/review';
 export default function Home() {
-  const [selected, setSelected] = useState('payments');
+  const [selected, setSelected] = useState('retention');
   const [result, setResult] = useState<CaseResult | null>(null);
   const [previous, setPrevious] = useState<CaseResult | null>(null);
   const [notes, setNotes] = useState<string[]>([]);
@@ -32,7 +28,19 @@ export default function Home() {
   const assessment = result?.assessments.find(
     (a) => a.assumptionId === selected,
   );
-  const prior = previous?.assessments.find((a) => a.assumptionId === selected);
+  const payments = result?.assessments.find(
+    (a) => a.assumptionId === 'payments',
+  );
+  const changes = result && previous ? describeChanges(previous, result) : [];
+  useEffect(() => {
+    if (result)
+      document
+        .getElementById(previous ? 'review-changes' : 'finding-payments')
+        ?.focus();
+  }, [result, previous]);
+  useEffect(() => {
+    if (error) document.getElementById('review-error')?.focus();
+  }, [error]);
   const sources = result?.sources ?? baseSources;
   async function analyze(addNote = false) {
     if (inFlight.current || comparisonBusy) return;
@@ -122,7 +130,7 @@ export default function Home() {
     setNotes([]);
     setDraft('');
     setError('');
-    setSelected('payments');
+    setSelected('retention');
     setTrace(null);
     setTraceUnavailable(false);
   }
@@ -146,16 +154,19 @@ export default function Home() {
           </a>
         </div>
       </header>
-      <main className="workspace">
+      <main className="workspace guided-review">
         <div className="case-header">
           <div>
-            <span className="tag">Fictional case</span>
-            <h1>Northstar</h1>
-            <p className="muted">
-              Workflow software for independent logistics teams
+            <span className="tag">Fictional case · September 15, 2026</span>
+            <h1>Have three Northstar customers paid?</h1>
+            <p className="review-intro">
+              Northstar makes workflow software for logistics teams. Its founder
+              says three customers have paid for the product. You are reviewing
+              that claim using a founder update, a finance note and pilot
+              interviews.
             </p>
           </div>
-          <div className="actions">
+          {result && (
             <Button
               variant="outline"
               className="secondary h-auto"
@@ -164,212 +175,215 @@ export default function Home() {
             >
               Reset case
             </Button>
+          )}
+        </div>
+        {previous && result && (
+          <section className="review-changes" aria-labelledby="review-changes">
+            <h2 id="review-changes" tabIndex={-1}>
+              What changed in this review
+            </h2>
+            <p>
+              Compared with the previous successful analysis. All earlier
+              sources are retained.
+            </p>
+            <ul>
+              {changes.map((change) => (
+                <li key={change.assumptionId}>
+                  <strong>{change.title}</strong>
+                  <span>
+                    {change.before !== change.after
+                      ? `${change.before ? statusLabels[change.before] : 'Not analyzed'} → ${statusLabels[change.after]}`
+                      : `${statusLabels[change.after]} — unchanged`}
+                  </span>
+                  {change.addedEvidence.map((source) => (
+                    <small key={source.title}>
+                      {source.title}:{' '}
+                      {relationLabels[source.relation].toLowerCase()}.
+                    </small>
+                  ))}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        <EvidenceReview
+          assumption={assumptions[0]}
+          assessment={payments}
+          sources={sources}
+        >
+          <div className="review-action">
+            <p>
+              The analysis identifies which sources support the claim,
+              contradict it or do not establish it. It does not verify payments
+              outside these documents.
+            </p>
             <Button
               className="primary h-auto"
               onClick={() => analyze()}
               disabled={locked}
             >
               {busy
-                ? 'Analyzing sources…'
+                ? 'Reviewing the evidence…'
                 : result
-                  ? 'Reanalyze case'
-                  : 'Analyze with Jev'}
+                  ? 'Review the evidence again'
+                  : 'Review the evidence'}
             </Button>
+            <p className="source-meta">
+              Public demo. Live runs share a daily allowance and a per-network
+              limit.
+            </p>
           </div>
-        </div>
-        <p className="source-meta">
-          Public demo · Live runs share a daily allowance and have a per-network
-          limit. The recorded benchmark is always available without a live run.
-        </p>
-        {error && (
-          <div className="notice error" role="alert">
-            {error}
-          </div>
-        )}
+        </EvidenceReview>
         <div aria-live="polite" aria-atomic="true">
-          {busy ? (
-            <div className="notice">
-              Jev is comparing each source with the three assumptions. Previous
-              results remain visible until this run finishes.
-            </div>
-          ) : result ? (
-            <div className="notice">
-              <strong>Live analysis complete.</strong> {sources.length} sources
-              assessed in {(result.elapsedMs / 1000).toFixed(1)}s.
-              {previous ? ' The latest assessment is shown below.' : ''}{' '}
-              <span className="muted">
-                Source support is not independent verification.
-              </span>
-            </div>
-          ) : (
-            <div className="notice">
-              Read the sources, then run a live analysis. Add a note to see what
-              changes. Nothing here is a verified business fact.
-            </div>
+          {busy && (
+            <p className="notice">
+              Reviewing the source documents. Any findings shown belong to the
+              previous successful review.
+            </p>
+          )}
+          {result && !busy && !error && (
+            <p className="source-meta">
+              Analysis completed · {sources.length} sources ·{' '}
+              {(result.elapsedMs / 1000).toFixed(1)}s. Source support is not
+              independent verification.
+            </p>
           )}
         </div>
-        <ModelComparison
-          key={`${resetVersion}:${JSON.stringify(notes)}`}
-          notes={notes}
-          disabled={busy}
-          onBusyChange={setComparisonBusy}
-        />
-        <ExecutionTrace
-          trace={trace}
-          result={result}
-          previous={previous}
-          busy={busy}
-          unavailable={traceUnavailable}
-        />
-        <div className="board">
-          <div>
-            <section className="panel" aria-label="Investment assumptions">
-              <div className="panel-heading">
-                <h2>Investment assumptions</h2>
-                <span className="muted">3</span>
-              </div>
-              {assumptions.map((a) => {
-                const current = result?.assessments.find(
-                  (s) => s.assumptionId === a.id,
-                );
-                return (
-                  <button
-                    key={a.id}
-                    className={`assumption ${selected === a.id ? 'selected' : ''}`}
-                    aria-pressed={selected === a.id}
-                    onClick={() => setSelected(a.id)}
-                  >
-                    <span className={`status ${current?.status ?? ''}`}>
-                      {current ? statusLabels[current.status] : 'Not analyzed'}
-                    </span>
-                    <h3>{a.title}</h3>
-                    <small>
-                      {current
-                        ? `${current.evidence.filter((e) => e.relation !== 'insufficient').length} of ${sources.length} sources provide directional evidence`
-                        : 'Select to inspect the claim and sources'}
-                    </small>
-                  </button>
-                );
-              })}
-            </section>
-            <section className="panel note-panel">
-              <h2>Add to the case</h2>
-              <p className="muted">
-                A new note is another source, not a replacement for the existing
-                ones.
+        {error && (
+          <div
+            id="review-error"
+            className="notice error"
+            role="alert"
+            tabIndex={-1}
+          >
+            <p>{error}</p>
+            {result && (
+              <p>
+                No new finding was applied. The findings above belong to the
+                previous successful review.
               </p>
-              <label htmlFor="note">Analyst note</label>
-              <Textarea
-                id="note"
-                className="min-h-32 bg-white text-base"
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                maxLength={2000}
-                disabled={locked || notes.length >= 4}
-                placeholder="Add a fictional interview excerpt, observation or evidence summary…"
-                aria-describedby="note-limit note-privacy"
-              />
-              <div className="note-footer">
-                <Button
-                  variant="link"
-                  className="link-button h-auto px-0"
-                  onClick={() => setDraft(sampleNote)}
-                  disabled={locked || notes.length >= 4}
-                >
-                  Use a fictional activity note
-                </Button>
-                <span id="note-limit" className="source-meta">
-                  {draft.length}/2000
-                </span>
-              </div>
-              <Button
-                className="primary h-auto"
-                disabled={
-                  locked || draft.trim().length < 2 || notes.length >= 4
-                }
-                onClick={() => analyze(true)}
-              >
-                Add note & analyze
-              </Button>
-              <p id="note-privacy" className="source-meta">
-                {notes.length}/4 notes added. Use fictional, non-sensitive text
-                only. Notes are sent to TypeSafe for analysis, and to TypeSafe
-                and OpenAI for comparison. This demo does not save notes after a
-                refresh.
-              </p>
-            </section>
+            )}
           </div>
-          <section className="panel" aria-label="Selected assumption evidence">
-            <div className="panel-heading">
-              <h2>Source review</h2>
-              <span className="source-meta">{sources.length} sources</span>
-            </div>
-            <div className="detail">
-              <span className={`status ${assessment?.status ?? ''}`}>
-                {assessment
-                  ? statusLabels[assessment.status]
-                  : 'Awaiting analysis'}
+        )}
+        {result && (
+          <section className="note-panel" aria-labelledby="add-information">
+            <h2 id="add-information">Add information and review again</h2>
+            <p>
+              A new note becomes another source. It does not replace the
+              original documents or automatically resolve a disagreement.
+            </p>
+            <p className="muted">
+              The example below adds information about weekly product usage, a
+              separate question. It does not establish whether customers paid.
+              After running it, check which finding changes and which stays
+              unresolved.
+            </p>
+            <label htmlFor="note">Your note</label>
+            <Textarea
+              id="note"
+              className="min-h-32 bg-white text-base"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              maxLength={2000}
+              disabled={locked || notes.length >= 4}
+              placeholder="Write a fictional update or load the example below…"
+              aria-describedby="note-limit note-privacy"
+            />
+            <div className="note-footer">
+              <Button
+                variant="link"
+                className="link-button h-auto px-0"
+                onClick={() => setDraft(sampleNote)}
+                disabled={locked || notes.length >= 4}
+              >
+                Load a fictional weekly-usage note
+              </Button>
+              <span id="note-limit" className="source-meta">
+                {draft.length}/2000
               </span>
-              <h2 className="detail-title">{assumption.title}</h2>
-              <p className="muted">{assumption.claim}</p>
-              {prior && assessment && (
-                <p className="change">
-                  {prior.status !== assessment.status
-                    ? `Changed: ${statusLabels[prior.status]} → ${statusLabels[assessment.status]}.`
-                    : 'Assessment unchanged.'}{' '}
-                  {assessment.evidence.length > prior.evidence.length
-                    ? 'New note included; earlier sources retained.'
-                    : ''}
-                </p>
-              )}
-              <div className="next-question">
-                <h3>Next useful question</h3>
-                <p>
-                  {assessment?.question ??
-                    'What do the original sources actually establish?'}
-                </p>
-              </div>
-              <h3>Evidence trail</h3>
-              <div className="sources">
-                {sources.map((source) => {
-                  const judgment = assessment?.evidence.find(
-                    (e) => e.sourceId === source.id,
-                  );
-                  return (
-                    <article className="source" key={source.id}>
-                      <div className="source-head">
-                        <h3>{source.title}</h3>
-                        {judgment && (
-                          <span className={`status ${judgment.relation}`}>
-                            {relationLabels[judgment.relation]}
-                          </span>
-                        )}
-                      </div>
-                      <blockquote>{source.text}</blockquote>
-                      <p className="source-meta">{source.attribution}</p>
-                      {judgment?.confidence !== undefined && (
-                        <details className="source-meta">
-                          <summary>Judgment detail</summary>
-                          <p>
-                            Model distribution concentration:{' '}
-                            {Math.round(judgment.confidence * 100)}%. This is
-                            not a probability that the claim is true or the
-                            judgment is correct.
-                          </p>
-                        </details>
-                      )}
-                    </article>
-                  );
-                })}
-              </div>
             </div>
+            <Button
+              className="primary h-auto"
+              disabled={locked || draft.trim().length < 2 || notes.length >= 4}
+              onClick={() => analyze(true)}
+            >
+              {busy
+                ? 'Reviewing the updated case…'
+                : 'Add note and review again'}
+            </Button>
+            <p id="note-privacy" className="source-meta">
+              {notes.length}/4 notes added. Read or edit the example before
+              sending it. Use fictional, non-sensitive text only. Notes are sent
+              to TypeSafe for analysis, and to TypeSafe and OpenAI for
+              comparison. Refreshing clears this case.
+            </p>
           </section>
-        </div>
+        )}
+        <details
+          className="review-disclosure"
+          key={`questions-${resetVersion}`}
+        >
+          <summary>Other questions about Northstar</summary>
+          <p className="muted">
+            The same analysis also checks weekly usage and customer acquisition.
+            Selecting a question does not run another analysis.
+          </p>
+          <div className="actions question-picker" aria-label="Other questions">
+            {assumptions.slice(1).map((item) => (
+              <Button
+                key={item.id}
+                variant="outline"
+                className="secondary h-auto"
+                aria-pressed={selected === item.id}
+                onClick={() => setSelected(item.id)}
+              >
+                {item.title}
+              </Button>
+            ))}
+          </div>
+          <EvidenceReview
+            assumption={assumption}
+            assessment={assessment}
+            sources={sources}
+          />
+        </details>
+        <details className="review-disclosure" key={`trace-${resetVersion}`}>
+          <summary>How this result was produced</summary>
+          <p className="muted">
+            Inspect the actual requests, model responses, timing and application
+            rules. These are execution records, not hidden model reasoning.
+          </p>
+          <ExecutionTrace
+            trace={trace}
+            result={result}
+            previous={previous}
+            busy={busy}
+            unavailable={traceUnavailable}
+          />
+        </details>
+        <details
+          className="review-disclosure"
+          key={`comparison-${resetVersion}`}
+        >
+          <summary>Compare models using these sources</summary>
+          <p className="muted">
+            Run Jev, Luna and Terra on the same documents, or read the recorded
+            benchmark without making a live call. The benchmark remains
+            available when the live allowance runs out.
+          </p>
+          <ModelComparison
+            key={`${resetVersion}:${JSON.stringify(notes)}`}
+            notes={notes}
+            disabled={busy}
+            onBusyChange={setComparisonBusy}
+          />
+        </details>
         <footer className="footer">
-          Fictional portfolio demonstration. For human review, not an investment
-          recommendation.{' '}
+          Fictional portfolio demonstration. Findings describe the supplied
+          documents; they are not verified business facts or an investment
+          recommendation.
           {result &&
-            `Live model: ${result.model}. No recorded results substituted.`}
+            ` Live model: ${result.model}. No recorded results substituted.`}
         </footer>
       </main>
     </>

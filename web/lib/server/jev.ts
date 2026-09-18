@@ -1,3 +1,5 @@
+import { measuredMs } from '../trace.ts';
+import type { SourceTrace, TraceContext, Usage } from '../trace.ts';
 import type { Evaluation, Pair, Relation } from '../assessment.ts';
 export const relationCriteria: Record<Relation, string> = {
   supports:
@@ -66,6 +68,12 @@ function decode(value: unknown, pairs: Pair[]): Evaluation {
       ...pair,
       relation: answer.choice as Relation,
       confidence: answer.confidence,
+      probabilities: Object.fromEntries(
+        Object.keys(relationCriteria).map((key) => [
+          key,
+          (answer.probabilities as Record<string, number>)[key],
+        ]),
+      ) as Record<Relation, number>,
     };
   });
   const { input_tokens, output_tokens } = value.usage;
@@ -84,33 +92,102 @@ function decode(value: unknown, pairs: Pair[]): Evaluation {
     usage: { input_tokens, output_tokens },
   };
 }
+function reportedUsage(value: unknown): Usage | undefined {
+  if (!isObject(value) || !isObject(value.usage)) return;
+  const { input_tokens, output_tokens } = value.usage;
+  if (
+    typeof input_tokens === 'number' &&
+    typeof output_tokens === 'number' &&
+    Number.isSafeInteger(input_tokens) &&
+    Number.isSafeInteger(output_tokens) &&
+    input_tokens >= 0 &&
+    output_tokens >= 0
+  )
+    return { input_tokens, output_tokens };
+}
 async function evaluateBatch(
   pairs: Pair[],
   apiKey: string,
   request: typeof fetch,
   signal: AbortSignal,
+  trace: TraceContext,
 ): Promise<Evaluation> {
-  if (!apiKey) throw new Error('TypeSafe is not configured.');
-  const body = JSON.stringify(buildRequest(pairs));
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const response = await request('https://api.typesafe.ai/v1/systemone', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body,
-      signal: AbortSignal.any([signal, AbortSignal.timeout(20000)]),
-    });
-    if ([429, 529].includes(response.status) && attempt === 0) {
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      continue;
+  const started = performance.now();
+  const payload = buildRequest(pairs);
+  const span: SourceTrace = {
+    sourceId: pairs[0].source.id,
+    title: pairs[0].source.title,
+    status: 'failed',
+    startMs: measuredMs(trace.originMs),
+    durationMs: 0,
+    request: payload,
+    attempts: [],
+  };
+  try {
+    if (!apiKey) {
+      span.errorCode = 'not_configured';
+      throw new Error('TypeSafe is not configured.');
     }
-    if (!response.ok)
-      throw new Error(`TypeSafe request failed (${response.status}).`);
-    return decode(await response.json(), pairs);
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const attemptStarted = performance.now();
+      const record: SourceTrace['attempts'][number] = {
+        number: attempt + 1,
+        startMs: measuredMs(trace.originMs),
+        durationMs: 0,
+        outcome: 'failed',
+      };
+      span.attempts.push(record);
+      try {
+        span.errorCode = 'network_or_timeout';
+        const response = await request('https://api.typesafe.ai/v1/systemone', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(payload),
+          signal: AbortSignal.any([signal, AbortSignal.timeout(20000)]),
+        });
+        record.httpStatus = response.status;
+        if ([429, 529].includes(response.status) && attempt === 0) {
+          record.outcome = 'retry';
+          record.durationMs = measuredMs(attemptStarted);
+          await response.body?.cancel();
+        } else {
+          if (!response.ok) {
+            span.errorCode = 'http_error';
+            throw new Error(`TypeSafe request failed (${response.status}).`);
+          }
+          span.errorCode = 'invalid_response';
+          const raw: unknown = await response.json();
+          span.reportedUsage = reportedUsage(raw);
+          const result = decode(raw, pairs);
+          span.response = {
+            model: result.model,
+            usage: result.usage,
+            answers: result.judgments.map((j) => ({
+              assumptionId: j.assumption.id,
+              relation: j.relation,
+              confidence: j.confidence,
+              probabilities: j.probabilities!,
+            })),
+          };
+          span.status = 'completed';
+          delete span.errorCode;
+          record.outcome = 'completed';
+          return result;
+        }
+      } finally {
+        if (record.outcome !== 'retry')
+          record.durationMs = measuredMs(attemptStarted);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 800));
+    }
+    throw new Error('TypeSafe temporarily unavailable.');
+  } finally {
+    span.durationMs = measuredMs(started);
+    trace.record(span);
   }
-  throw new Error('TypeSafe temporarily unavailable.');
 }
 
 // Independent assumptions share a request only when they share the exact source.
@@ -119,7 +196,9 @@ export async function evaluatePairs(
   pairs: Pair[],
   apiKey: string,
   request: typeof fetch = fetch,
+  trace?: TraceContext,
 ): Promise<Evaluation> {
+  const observer = trace ?? { originMs: performance.now(), record: () => {} };
   const groups = new Map<string, Pair[]>();
   for (const pair of pairs) {
     const key = JSON.stringify([pair.source.id, pair.source.text]);
@@ -136,7 +215,9 @@ export async function evaluatePairs(
     signal.throwIfAborted();
     const batch = grouped.slice(i, i + 3);
     const results = await Promise.allSettled(
-      batch.map((group) => evaluateBatch(group, apiKey, request, signal)),
+      batch.map((group) =>
+        evaluateBatch(group, apiKey, request, signal, observer),
+      ),
     );
     for (const [index, result] of results.entries()) {
       if (result.status === 'rejected') throw result.reason;

@@ -1,5 +1,7 @@
 'use client';
 import { useRef, useState } from 'react';
+import { ExecutionTrace } from '@/components/trace/execution-trace';
+import type { RunTrace } from '@/lib/trace';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { assumptions, baseSources, sampleNote } from '@/lib/case';
@@ -19,6 +21,8 @@ export default function Home() {
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [trace, setTrace] = useState<RunTrace | null>(null);
+  const [traceUnavailable, setTraceUnavailable] = useState(false);
   const inFlight = useRef(false);
   const assumption = assumptions.find((a) => a.id === selected)!;
   const assessment = result?.assessments.find(
@@ -39,6 +43,7 @@ export default function Home() {
     inFlight.current = true;
     setBusy(true);
     setError('');
+    let receivedTrace = false;
     try {
       const response = await fetch('/api/assess', {
         method: 'POST',
@@ -47,6 +52,13 @@ export default function Home() {
         signal: AbortSignal.timeout(50000),
       });
       const data = (await response.json()) as CaseResult & { error?: string };
+      if (data.trace) {
+        receivedTrace = true;
+        setTrace(data.trace);
+        setTraceUnavailable(false);
+      } else {
+        setTraceUnavailable(true);
+      }
       if (!response.ok)
         throw new Error(
           data.error ?? 'Analysis could not be completed. Try again.',
@@ -56,6 +68,7 @@ export default function Home() {
       setNotes(nextNotes);
       if (addNote) setDraft('');
     } catch (err) {
+      if (!receivedTrace) setTraceUnavailable(true);
       setError(
         err instanceof TypeError
           ? 'Could not reach the analysis service. Your draft and previous results are unchanged. Try again.'
@@ -76,6 +89,8 @@ export default function Home() {
     setDraft('');
     setError('');
     setSelected('payments');
+    setTrace(null);
+    setTraceUnavailable(false);
   }
   return (
     <>
@@ -146,6 +161,13 @@ export default function Home() {
             </div>
           )}
         </div>
+        <ExecutionTrace
+          trace={trace}
+          result={result}
+          previous={previous}
+          busy={busy}
+          unavailable={traceUnavailable}
+        />
         <div className="board">
           <div>
             <section className="panel" aria-label="Investment assumptions">

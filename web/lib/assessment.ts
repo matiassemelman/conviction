@@ -1,3 +1,5 @@
+import { AssessmentFailure, measuredMs } from './trace.ts';
+import type { RunTrace, TraceContext } from './trace.ts';
 export type Relation = 'supports' | 'contradicts' | 'mixed' | 'insufficient';
 export function aggregate(relations: Relation[]): Relation {
   if (
@@ -13,13 +15,20 @@ export function aggregate(relations: Relation[]): Relation {
 import { assumptions, baseSources } from './case.ts';
 import type { Source, Assumption } from './case.ts';
 export type Pair = { assumption: Assumption; source: Source };
-export type Judgment = Pair & { relation: Relation; confidence: number };
+export type Judgment = Pair & {
+  relation: Relation;
+  confidence: number;
+  probabilities?: Record<Relation, number>;
+};
 export type Evaluation = {
   model: string;
   judgments: Judgment[];
   usage: { input_tokens: number; output_tokens: number };
 };
-export type Evaluate = (pairs: Pair[]) => Promise<Evaluation>;
+export type Evaluate = (
+  pairs: Pair[],
+  trace?: TraceContext,
+) => Promise<Evaluation>;
 export type Assessment = {
   assumptionId: string;
   status: Relation;
@@ -32,6 +41,7 @@ export type CaseResult = {
   model: string;
   usage: Evaluation['usage'];
   elapsedMs: number;
+  trace: RunTrace;
 };
 export const statusLabels: Record<Relation, string> = {
   supports: 'Supported by sources',
@@ -43,7 +53,8 @@ export async function assessCase(
   notes: string[],
   evaluate: Evaluate,
 ): Promise<CaseResult> {
-  const started = Date.now();
+  const started = performance.now();
+  const startedAt = new Date().toISOString();
   const sources = [
     ...baseSources,
     ...notes.map((text, index) => ({
@@ -56,7 +67,79 @@ export async function assessCase(
   const pairs = assumptions.flatMap((assumption) =>
     sources.map((source) => ({ assumption, source })),
   );
-  const result = await evaluate(pairs);
+  const preparedMs = measuredMs(started);
+  const trace: RunTrace = {
+    id: crypto.randomUUID(),
+    startedAt,
+    status: 'failed',
+    durationMs: 0,
+    sourceCount: sources.length,
+    assumptionCount: assumptions.length,
+    steps: [
+      {
+        name: 'Prepare inputs',
+        kind: 'code',
+        status: 'completed',
+        startMs: 0,
+        durationMs: preparedMs,
+      },
+    ],
+    sources: sources.map((source) => ({
+      sourceId: source.id,
+      title: source.title,
+      status: 'skipped',
+      startMs: null,
+      durationMs: 0,
+      attempts: [],
+    })),
+    usage: { input_tokens: 0, output_tokens: 0, complete: false },
+  };
+  const evaluationStart = performance.now();
+  let result: Evaluation;
+  try {
+    result = await evaluate(pairs, {
+      originMs: started,
+      record: (span) => {
+        const index = trace.sources.findIndex(
+          (source) => source.sourceId === span.sourceId,
+        );
+        if (index >= 0) trace.sources[index] = span;
+      },
+    });
+  } catch {
+    trace.steps.push({
+      name: 'Jev judgments',
+      kind: 'model',
+      status: 'failed',
+      startMs: preparedMs,
+      durationMs: measuredMs(evaluationStart),
+    });
+    trace.steps.push({
+      name: 'Apply rules',
+      kind: 'code',
+      status: 'skipped',
+      startMs: measuredMs(started),
+      durationMs: 0,
+    });
+    trace.durationMs = measuredMs(started);
+    for (const source of trace.sources) {
+      const usage = source.response?.usage ?? source.reportedUsage;
+      if (usage) {
+        trace.usage.input_tokens += usage.input_tokens;
+        trace.usage.output_tokens += usage.output_tokens;
+      }
+    }
+    throw new AssessmentFailure(trace);
+  }
+  trace.steps.push({
+    name: 'Jev judgments',
+    kind: 'model',
+    status: 'completed',
+    startMs: preparedMs,
+    durationMs: measuredMs(evaluationStart),
+  });
+  const aggregationStart = performance.now();
+  const aggregationOffset = measuredMs(started);
   const assessments = assumptions.map((assumption) => {
     const evidence = result.judgments
       .filter((j) => j.assumption.id === assumption.id)
@@ -73,11 +156,27 @@ export async function assessCase(
       evidence,
     };
   });
+  trace.steps.push({
+    name: 'Apply rules',
+    kind: 'code',
+    status: 'completed',
+    startMs: aggregationOffset,
+    durationMs: measuredMs(aggregationStart),
+  });
+  trace.status = 'completed';
+  trace.durationMs = measuredMs(started);
+  trace.usage = {
+    ...result.usage,
+    complete: trace.sources.every(
+      (source) => source.status === 'completed' && source.attempts.length === 1,
+    ),
+  };
   return {
     assessments,
     sources,
     model: result.model,
     usage: result.usage,
-    elapsedMs: Date.now() - started,
+    elapsedMs: trace.durationMs,
+    trace,
   };
 }

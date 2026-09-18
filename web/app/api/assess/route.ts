@@ -12,8 +12,8 @@ export async function POST(request: Request) {
     );
   active = true;
   try {
-    return await handleAssessment(request, (pairs) =>
-      evaluatePairs(pairs, process.env.TYPESAFE_API_KEY ?? ''),
+    return await handleAssessment(request, (pairs, trace) =>
+      evaluatePairs(pairs, process.env.TYPESAFE_API_KEY ?? '', fetch, trace),
     );
   } finally {
     active = false;

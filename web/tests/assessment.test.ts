@@ -50,6 +50,6 @@ void test('provider failure cannot be presented as a successful empty assessment
       assessCase([], async () => {
         throw new Error('offline');
       }),
-    /offline/,
+    /Analysis failed/,
   );
 });

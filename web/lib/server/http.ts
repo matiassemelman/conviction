@@ -1,3 +1,4 @@
+import { AssessmentFailure } from '../trace.ts';
 import { assessCase } from '../assessment.ts';
 import type { Evaluate } from '../assessment.ts';
 const response = (body: unknown, status = 200) =>
@@ -74,9 +75,10 @@ export async function handleAssessment(
   }
   try {
     return response(await assessCase(notes, evaluate));
-  } catch {
+  } catch (error) {
     return response(
       {
+        ...(error instanceof AssessmentFailure ? { trace: error.trace } : {}),
         error:
           'Live analysis is unavailable. Your previous results and draft are unchanged. Try again shortly.',
       },

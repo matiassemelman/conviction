@@ -1,0 +1,42 @@
+{
+  "deployment": "dpl_C6oFmMNYw5Uh48mmQQKXBrR2QkEG",
+  "codeCheckpoint": "963cf4d",
+  "url": "https://conviction-kappa.vercel.app",
+  "status": "READY",
+  "tests": 42,
+  "reviews": {
+    "standardsPending": 0,
+    "specPending": 0
+  },
+  "browser": {
+    "comparisonFirst": [
+      "jev completed",
+      "luna completed",
+      "terra completed"
+    ],
+    "resetClearsComparisonBeforeMainReview": true,
+    "baseReview": {
+      "sources": 3,
+      "paymentStatus": "mixed",
+      "providerSecondsDisplayed": 0.3
+    },
+    "noteReview": {
+      "sources": 4,
+      "paymentStatus": "mixed",
+      "usageBefore": "insufficient",
+      "usageAfter": "supports",
+      "providerSecondsDisplayed": 0.6
+    },
+    "mobileClientWidth": 375,
+    "mobileScrollWidth": 375,
+    "consoleErrors": 0
+  },
+  "localQuotaProbe": {
+    "limit": 3,
+    "namespace": "development",
+    "assessStatus": 429,
+    "compareStatus": 429,
+    "draftCharactersPreserved": 90
+  },
+  "productionDailyLimit": 20
+}

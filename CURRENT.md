@@ -1,6 +1,7 @@
 # Current
 
-Stage: MVP, execution traces and Jev/Luna/Terra comparison implemented, reviewed and publicly deployed on 2026-09-18.
+Stage: Guided first review, execution traces and Jev/Luna/Terra comparison implemented, reviewed and publicly deployed on 2026-09-18.
+Current deployment: dpl_C6oFmMNYw5Uh48mmQQKXBrR2QkEG, code checkpoint 963cf4d, READY.
 Owner: README.md. Specs: .scratch/mvp/spec.md, .scratch/trace/spec.md and .scratch/comparison/spec.md.
 App: https://conviction-kappa.vercel.app
 Repository: https://github.com/matiassemelman/conviction (public, main).
@@ -27,8 +28,8 @@ Final Standards review: 0 findings. Spec review prompted safe handling of non-JS
 
 GitHub visibility is PUBLIC, verified anonymously along with README and the linked comparison report. All 19 relative README links resolve to tracked content. Historical scan covered 244 blobs with no configured-secret or credential-pattern matches; separate semantic review found no confidential/client material.
 
-The header links to GitHub; GitHub links back to the demo. Current deployment: dpl_6L9YDoxS6BYngNeRWDpTsWRXZRbS, code checkpoint 3cff9e4, READY. Browser QA confirms the link at desktop and mobile width with no horizontal page overflow. A cached build initially omitted the added CSS; a clean deployment restored it and the final published asset was verified. Standards and Spec reviews: 0 findings each. 39 tests, typecheck, lint and production build pass. Owner acceptance remains separate from these technical checks.
+The header links to GitHub; GitHub links back to the demo. Public-source release deployment: dpl_6L9YDoxS6BYngNeRWDpTsWRXZRbS, code checkpoint 3cff9e4, READY. Browser QA confirms the link at desktop and mobile width with no horizontal page overflow. A cached build initially omitted the added CSS; a clean deployment restored it and the final published asset was verified. Standards and Spec reviews: 0 findings each. 39 tests, typecheck, lint and production build pass. Owner acceptance remains separate from these technical checks.
 
-## Guided first review — implementation
+## Guided first review — complete
 
-User approved a clearer first-visit flow: payment question and source context before the action; source-backed finding before performance details; editable weekly-usage example and before/after comparison; secondary questions and technical detail below. Spec: .scratch/guided-review/spec.md, base 7ad5153. Existing provider contracts, rubric, aggregation and quotas retained. 42 tests, typecheck and lint pass. Local browser verified base live analysis, editable usage note and real before/after, all-model comparison, daily-limit preservation, reset and mobile layout. Final review corrected reset availability and single-source conflict wording; both axes closed with 0 pending findings. Production deployment and verification in progress. See docs/guided-review/validation.md.
+User approved a clearer first-visit flow: payment question and source context before the action; source-backed finding before performance details; editable weekly-usage example and before/after comparison; secondary questions and technical detail below. Spec: .scratch/guided-review/spec.md, base 7ad5153. Existing provider contracts, rubric, aggregation and quotas retained. 42 tests, typecheck and lint pass. Local browser verified base live analysis, editable usage note and real before/after, all-model comparison, daily-limit preservation, reset and mobile layout. Final review corrected reset availability and single-source conflict wording; both axes closed with 0 pending findings. Public deployment and browser verification passed: comparison-first reset, payment finding, editable note and real before/after, desktop/mobile. Production quota remains 20/day. Owner acceptance of the experience remains separate from technical QA. See docs/guided-review/validation.md.

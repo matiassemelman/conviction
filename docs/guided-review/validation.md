@@ -27,4 +27,13 @@ Final two-axis review found one issue per axis, both fixed and independently clo
 - Spec: Reset must remain available when comparison is used before the first analysis. It is now always visible and still locked during requests.
 - Standards: mixed evidence can arise within one source. The three mixed headlines now describe conflicting evidence without inventing disagreement between separate documents; a focused regression covers all three assumptions.
 
-Standards and Spec: 0 findings pending. Production verification remains pending. Technical QA is separate from owner acceptance of the new experience.
+Standards and Spec: 0 findings pending. Production verification passed. Technical QA is separate from owner acceptance of the new experience.
+
+## Public release
+- Deployment: dpl_C6oFmMNYw5Uh48mmQQKXBrR2QkEG, code checkpoint 963cf4d, READY after a clean production build. Public alias: https://conviction-kappa.vercel.app.
+- Anonymous HTTP 200 contains the guided question; published CSS contains the new layout. The older unguarded immutable deployment still redirects to Vercel login (302).
+- Public browser, comparison-first path: Jev, Luna and Terra completed on three sources before any main review. Reset remained available; reopening comparison confirmed that the prior comparison was cleared.
+- Public main review completed on three sources (0.3 s provider stage), showing the corrected conflicting-evidence headline and actual named source relations.
+- The 271-character example remained editable and visible before submission. Public note review completed on four sources (0.6 s provider stage): weekly usage changed from evidence gap to source support; payments remained conflicting and acquisition remained challenged.
+- Final desktop and mobile screenshots inspected after the last correction. Mobile clientWidth/scrollWidth both 375 CSS pixels; all optional disclosures collapsed after reset. No browser console errors recorded. Temporary viewport override reset.
+- Production allowance remains 20/day; the three-run limit was local test configuration only. No new dependency or provider/inference contract change.

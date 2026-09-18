@@ -1,0 +1,34 @@
+{
+  "deployment": "dpl_2Af2t9WCMAa8cTCqw9vv2viJyRBP",
+  "codeCheckpoint": "f67b630",
+  "startedAt": "2026-09-18T18:05:09.137Z",
+  "runs": [
+    {
+      "id": "jev",
+      "status": "completed"
+    },
+    {
+      "id": "luna",
+      "status": "completed"
+    },
+    {
+      "id": "terra",
+      "status": "completed"
+    }
+  ],
+  "managedRedisConcurrency": {
+    "namespace": "development",
+    "requests": 12,
+    "limit": 3,
+    "admitted": 3,
+    "limited": 9
+  },
+  "publicPageStatus": 200,
+  "oldDeploymentStatus": 302,
+  "oldDeploymentRedirect": "Vercel login",
+  "publicBrowserJev": "completed",
+  "invalidInputBurst": {
+    "400": 19,
+    "429": 1
+  }
+}

@@ -1,6 +1,6 @@
 # Public demo rollout — 2026-09-18
 
-User authorized anonymous link sharing and bounded paid inference. Base: 479ec8c. This is preparation evidence; public activation is not yet complete.
+User authorized anonymous link sharing and bounded paid inference. Base: 479ec8c. Public activation is complete; source visibility and header link are being finalized.
 
 ## Policy
 - Shared allowance: 20 admitted live executions per UTC day across assess and compare, all production instances and new deployments. Owner may set DEMO_DAILY_LIMIT to an integer 1–100.
@@ -22,7 +22,7 @@ Only counters and HMAC-derived identifiers go to Redis; no notes or raw IPs. IP 
 - Local browser: missing quota configuration preserves the 271-character fictional note and returns a clear pause message; original sources and recorded benchmark remain visible.
 
 ## Activation prerequisite
-Vercel CLI reported `integration_terms_acceptance_required` for the chosen free Upstash resource. Owner must accept marketplace terms at the Vercel-provided URL before the resource can be provisioned. No paid plan or automatic upgrade selected. The older production alias remains private until the quota store, production smoke, review and public access checks are complete.
+Vercel CLI reported `integration_terms_acceptance_required` for the chosen free Upstash resource. Owner must accept marketplace terms at the Vercel-provided URL before the resource can be provisioned. No paid plan or automatic upgrade selected. The owner subsequently accepted terms; the Free resource was provisioned and connected to production.
 
 ## References
 - [Upstash REST API](https://upstash.com/docs/redis/features/restapi)
@@ -31,4 +31,13 @@ Vercel CLI reported `integration_terms_acceptance_required` for the chosen free 
 - [Vercel WAF limits](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting)
 - [Vercel deployment protection](https://vercel.com/docs/deployment-protection/methods-to-protect-deployments/vercel-authentication)
 
-Final Standards review: 0 findings. Spec review prompted safe handling of non-JSON edge errors: 429 preserves UI state and shows a controlled retry message. Malformed successful responses are rejected safely. Final typecheck and lint pass; the production build passed before this last error-path correction. Direct anonymous GET probes still reach Vercel login; public WAF behavior remains to be verified after activation.
+Final Standards review: 0 findings. Spec review prompted safe handling of non-JSON edge errors: 429 preserves UI state and shows a controlled retry message. Malformed successful responses are rejected safely. Typecheck, lint and the final deployed production build pass.
+
+## Live activation evidence
+- Deployment dpl_2Af2t9WCMAa8cTCqw9vv2viJyRBP is READY at https://conviction-kappa.vercel.app, source checkpoint f67b630.
+- Upstash resource store_3gD2uzIedVP43Opz: Available, Free, connected to conviction production. Provisioned with autoUpgrade=false, eviction=false and prodPack=false. REST connectivity returned PONG.
+- Managed Upstash concurrency check in the separate development namespace: 12 concurrent reservations, allowance 3, exactly 3 admitted and 9 limited. No model calls.
+- Before public activation, protected production comparison completed for Jev, Luna and Terra.
+- Public alias returned HTTP 200 with the app; browser without Vercel login completed a Jev run on three sources (312 ms measured provider stage).
+- Old immutable URL conviction-e2jv5azls-matiassemelmans-projects.vercel.app and current immutable URL both returned HTTP 302 redirects to Vercel login, checked without following redirects.
+- Anonymous invalid-input API burst: 19 HTTP 400 responses followed by HTTP 429 from the edge rule. Invalid requests did not reserve model allowance.

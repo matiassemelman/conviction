@@ -135,7 +135,16 @@ export default function Home() {
           </span>
           Conviction
         </div>
-        <small>Evidence workspace</small>
+        <div className="topbar-links">
+          <small>Evidence workspace</small>
+          <a
+            href="https://github.com/matiassemelman/conviction"
+            target="_blank"
+            rel="noreferrer"
+          >
+            View code on GitHub
+          </a>
+        </div>
       </header>
       <main className="workspace">
         <div className="case-header">

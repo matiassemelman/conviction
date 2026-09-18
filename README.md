@@ -1,8 +1,8 @@
 # Conviction
 
-[Open the private demo](https://conviction-kappa.vercel.app) · [Current state](CURRENT.md) · [Evaluation evidence](docs/comparison/validation.md)
+[Open the demo](https://conviction-kappa.vercel.app) · [Current state](CURRENT.md) · [Evaluation evidence](docs/comparison/validation.md)
 
-The demo requires a Vercel session with project access.
+The demo opens without a Vercel account. Live actions share a limited daily allowance; the recorded benchmark is always available. [Browse the source on GitHub](https://github.com/matiassemelman/conviction).
 
 A small venture diligence workspace with TypeSafe Jev and a side-by-side comparison against GPT-5.6 Luna and Terra. Inspect three assumptions about a fictional startup, read the sources behind each judgment, surface conflicts and add a note to see what changes.
 
@@ -24,6 +24,8 @@ Inspectable execution trace
 Same-case comparison: Jev / Luna / Terra
     ↓  Frozen labels, repeated measurements, independent review
 Private Vercel release
+    ↓  Shared usage limits and public access checks
+Public demo + source repository
 ```
 
 ### The conversation behind the changes
@@ -36,7 +38,8 @@ These are summaries of the requests and decisions, rather than a transcript.
 | Use Jev in the product and involve it throughout development. | A server-side adapter for typed source judgments, plus separate advisory receipts for development stages. Credentials stay outside the repository and browser. |
 | The analysis finished too quickly to see what happened. | A trace that stays visible after completion: actual request bodies, validated responses, timings, retries and the rules applied to the answers. |
 | Compare Jev with Luna and Terra on cost, latency and correctness. | The same source boundaries and rubric for all three, independent results and failures, and a separate labeled benchmark. Matias enabled access to the requested OpenAI models before evaluation. |
-| Deploy the comparison on Vercel. | A standard Next.js runtime with private deployment access and real production API checks. The earlier Sites release remains separate. |
+| Deploy the comparison on Vercel. | A standard Next.js runtime, first released privately with real production API checks. The earlier Sites release remains separate. |
+| Let anyone try the sample and inspect its code. | Public demo and GitHub source, with shared live-usage limits and protected old deployment URLs. |
 
 ### What testing changed
 
@@ -69,7 +72,7 @@ Notes live only in browser memory and are sent to TypeSafe when you analyze, and
 
 Each source gets one request containing the three independent assumption questions. Up to three requests run concurrently, with a 40-second overall timeout. At most seven logical source evaluations (21 judgments) are needed; one retry per source on 429/529 permits at most 14 HTTP attempts (42 transmitted questions). Sources are never placed together in one provider request: browser QA caught cross-source contamination in the earlier batch design. At most four notes of 2000 characters are accepted; all existing sources remain visible. Comparison runs all three models independently with the same source grouping and concurrency. OpenAI uses the same relation rubric with strict structured output and reasoning disabled. A failed model does not erase another model’s result. Case data stays in browser memory. Redis stores usage counters only; there is no vector store or autonomous agent runtime.
 
-The Vercel project uses Vercel Authentication for all deployments, including production. The request origin check and per-isolate concurrency guard are defense in depth, not a public API authentication system. Do not expose this paid-inference endpoint publicly without adding appropriate access and usage controls.
+The production alias is public. Preview and immutable deployment URLs remain protected by Vercel Authentication, including older releases. Both live endpoints reserve a centralized usage allowance before calling models; invalid requests and quota-store failures do not reach providers.
 
 ## Model comparison
 
@@ -81,7 +84,7 @@ To rerun the benchmark explicitly (144 paid provider calls), run `node --env-fil
 
 ## Public sharing rollout
 
-Public sharing is authorized and the usage guard is implemented. Activation currently awaits the quota-store setup; see [current state](CURRENT.md) and [rollout evidence](docs/public-demo/validation.md).
+The demo is public and the centralized usage guard is active. See [current state](CURRENT.md) and [rollout evidence](docs/public-demo/validation.md). Source code and linked documentation are published in this repository.
 
 Both live actions share a centralized allowance of 20 executions per UTC day, plus five per network in each fixed 10-minute window. A comparison counts as one execution and may call all three models. Reservations count even if a provider later fails. When a limit is reached, visitors can still read the case and recorded benchmark. These quotas limit calls; they are not a guaranteed dollar billing cap.
 

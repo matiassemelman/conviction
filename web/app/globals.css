@@ -92,6 +92,19 @@ button:disabled {
   color: #c6d3e7;
   font-size: 14px;
 }
+.topbar-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  text-align: right;
+}
+.topbar-links a {
+  color: white;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .workspace {
   max-width: 1420px;
   padding: 32px 4vw 60px;

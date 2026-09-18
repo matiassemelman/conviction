@@ -1,0 +1,296 @@
+'use client';
+import { useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { assumptions, baseSources, sampleNote } from '@/lib/case';
+import { statusLabels } from '@/lib/assessment';
+import type { CaseResult, Relation } from '@/lib/assessment';
+const relationLabels: Record<Relation, string> = {
+  supports: 'Supports this claim',
+  contradicts: 'Contradicts this claim',
+  mixed: 'Mixed signals',
+  insufficient: 'Does not establish this claim',
+};
+export default function Home() {
+  const [selected, setSelected] = useState('payments');
+  const [result, setResult] = useState<CaseResult | null>(null);
+  const [previous, setPrevious] = useState<CaseResult | null>(null);
+  const [notes, setNotes] = useState<string[]>([]);
+  const [draft, setDraft] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const inFlight = useRef(false);
+  const assumption = assumptions.find((a) => a.id === selected)!;
+  const assessment = result?.assessments.find(
+    (a) => a.assumptionId === selected,
+  );
+  const prior = previous?.assessments.find((a) => a.assumptionId === selected);
+  const sources = result?.sources ?? baseSources;
+  async function analyze(addNote = false) {
+    if (inFlight.current) return;
+    const nextNotes = addNote ? [...notes, draft.trim()] : notes;
+    if (
+      addNote &&
+      (draft.trim().length < 2 ||
+        draft.trim().length > 2000 ||
+        notes.length >= 4)
+    )
+      return;
+    inFlight.current = true;
+    setBusy(true);
+    setError('');
+    try {
+      const response = await fetch('/api/assess', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes: nextNotes }),
+        signal: AbortSignal.timeout(50000),
+      });
+      const data = (await response.json()) as CaseResult & { error?: string };
+      if (!response.ok)
+        throw new Error(
+          data.error ?? 'Analysis could not be completed. Try again.',
+        );
+      setPrevious(result);
+      setResult(data);
+      setNotes(nextNotes);
+      if (addNote) setDraft('');
+    } catch (err) {
+      setError(
+        err instanceof Error && err.name !== 'TimeoutError'
+          ? err.message
+          : 'Analysis timed out. Your draft and previous results are unchanged. Try again.',
+      );
+    } finally {
+      setBusy(false);
+      inFlight.current = false;
+    }
+  }
+  function reset() {
+    if (inFlight.current) return;
+    setResult(null);
+    setPrevious(null);
+    setNotes([]);
+    setDraft('');
+    setError('');
+    setSelected('payments');
+  }
+  return (
+    <>
+      <header className="topbar">
+        <div className="brand">
+          <span className="brand-mark" aria-hidden="true">
+            c
+          </span>
+          Conviction
+        </div>
+        <small>Evidence workspace</small>
+      </header>
+      <main className="workspace">
+        <div className="case-header">
+          <div>
+            <span className="tag">Fictional case</span>
+            <h1>Northstar</h1>
+            <p className="muted">
+              Workflow software for independent logistics teams
+            </p>
+          </div>
+          <div className="actions">
+            <Button
+              variant="outline"
+              className="secondary h-auto"
+              onClick={reset}
+              disabled={busy || (!result && !draft)}
+            >
+              Reset case
+            </Button>
+            <Button
+              className="primary h-auto"
+              onClick={() => analyze()}
+              disabled={busy}
+            >
+              {busy
+                ? 'Analyzing sources…'
+                : result
+                  ? 'Reanalyze case'
+                  : 'Analyze with Jev'}
+            </Button>
+          </div>
+        </div>
+        {error && (
+          <div className="notice error" role="alert">
+            {error}
+          </div>
+        )}
+        <div aria-live="polite" aria-atomic="true">
+          {busy ? (
+            <div className="notice">
+              Jev is comparing each source with the three assumptions. Previous
+              results remain visible until this run finishes.
+            </div>
+          ) : result ? (
+            <div className="notice">
+              <strong>Live analysis complete.</strong> {sources.length} sources
+              assessed in {(result.elapsedMs / 1000).toFixed(1)}s.
+              {previous ? ' The latest assessment is shown below.' : ''}{' '}
+              <span className="muted">
+                Source support is not independent verification.
+              </span>
+            </div>
+          ) : (
+            <div className="notice">
+              Read the sources, then run a live analysis. Add a note to see what
+              changes. Nothing here is a verified business fact.
+            </div>
+          )}
+        </div>
+        <div className="board">
+          <div>
+            <section className="panel" aria-label="Investment assumptions">
+              <div className="panel-heading">
+                <h2>Investment assumptions</h2>
+                <span className="muted">3</span>
+              </div>
+              {assumptions.map((a) => {
+                const current = result?.assessments.find(
+                  (s) => s.assumptionId === a.id,
+                );
+                return (
+                  <button
+                    key={a.id}
+                    className={`assumption ${selected === a.id ? 'selected' : ''}`}
+                    aria-pressed={selected === a.id}
+                    onClick={() => setSelected(a.id)}
+                  >
+                    <span className={`status ${current?.status ?? ''}`}>
+                      {current ? statusLabels[current.status] : 'Not analyzed'}
+                    </span>
+                    <h3>{a.title}</h3>
+                    <small>
+                      {current
+                        ? `${current.evidence.filter((e) => e.relation !== 'insufficient').length} of ${sources.length} sources provide directional evidence`
+                        : 'Select to inspect the claim and sources'}
+                    </small>
+                  </button>
+                );
+              })}
+            </section>
+            <section className="panel note-panel">
+              <h2>Add to the case</h2>
+              <p className="muted">
+                A new note is another source, not a replacement for the existing
+                ones.
+              </p>
+              <label htmlFor="note">Analyst note</label>
+              <Textarea
+                id="note"
+                className="min-h-32 bg-white text-base"
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                maxLength={2000}
+                disabled={busy || notes.length >= 4}
+                placeholder="Paste an interview excerpt, observation or evidence summary…"
+                aria-describedby="note-limit"
+              />
+              <div className="note-footer">
+                <Button
+                  variant="link"
+                  className="link-button h-auto px-0"
+                  onClick={() => setDraft(sampleNote)}
+                  disabled={busy || notes.length >= 4}
+                >
+                  Use a fictional activity note
+                </Button>
+                <span id="note-limit" className="source-meta">
+                  {draft.length}/2000
+                </span>
+              </div>
+              <Button
+                className="primary h-auto"
+                disabled={busy || draft.trim().length < 2 || notes.length >= 4}
+                onClick={() => analyze(true)}
+              >
+                Add note & analyze
+              </Button>
+              <p className="source-meta">
+                {notes.length}/4 notes added. Sent to TypeSafe for analysis.
+                This demo does not save notes after a refresh.
+              </p>
+            </section>
+          </div>
+          <section className="panel" aria-label="Selected assumption evidence">
+            <div className="panel-heading">
+              <h2>Source review</h2>
+              <span className="source-meta">{sources.length} sources</span>
+            </div>
+            <div className="detail">
+              <span className={`status ${assessment?.status ?? ''}`}>
+                {assessment
+                  ? statusLabels[assessment.status]
+                  : 'Awaiting analysis'}
+              </span>
+              <h2 className="detail-title">{assumption.title}</h2>
+              <p className="muted">{assumption.claim}</p>
+              {prior && assessment && (
+                <p className="change">
+                  {prior.status !== assessment.status
+                    ? `Changed: ${statusLabels[prior.status]} → ${statusLabels[assessment.status]}.`
+                    : 'Assessment unchanged.'}{' '}
+                  {assessment.evidence.length > prior.evidence.length
+                    ? 'New note included; earlier sources retained.'
+                    : ''}
+                </p>
+              )}
+              <div className="next-question">
+                <h3>Next useful question</h3>
+                <p>
+                  {assessment?.question ??
+                    'What do the original sources actually establish?'}
+                </p>
+              </div>
+              <h3>Evidence trail</h3>
+              <div className="sources">
+                {sources.map((source) => {
+                  const judgment = assessment?.evidence.find(
+                    (e) => e.sourceId === source.id,
+                  );
+                  return (
+                    <article className="source" key={source.id}>
+                      <div className="source-head">
+                        <h3>{source.title}</h3>
+                        {judgment && (
+                          <span className={`status ${judgment.relation}`}>
+                            {relationLabels[judgment.relation]}
+                          </span>
+                        )}
+                      </div>
+                      <blockquote>{source.text}</blockquote>
+                      <p className="source-meta">{source.attribution}</p>
+                      {judgment && (
+                        <details className="source-meta">
+                          <summary>Judgment detail</summary>
+                          <p>
+                            Model distribution concentration:{' '}
+                            {Math.round(judgment.confidence * 100)}%. This is
+                            not a probability that the claim is true or the
+                            judgment is correct.
+                          </p>
+                        </details>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        </div>
+        <footer className="footer">
+          Fictional portfolio demonstration. For human review, not an investment
+          recommendation.{' '}
+          {result &&
+            `Live model: ${result.model}. No recorded results substituted.`}
+        </footer>
+      </main>
+    </>
+  );
+}

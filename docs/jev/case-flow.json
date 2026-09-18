@@ -1,0 +1,216 @@
+{
+  "stage": "live-case-flow",
+  "initial": {
+    "assessments": [
+      {
+        "assumptionId": "payments",
+        "status": "mixed",
+        "question": "Why do the founder update and finance note disagree about payments?",
+        "evidence": [
+          {
+            "sourceId": "founder",
+            "relation": "supports",
+            "confidence": 1
+          },
+          {
+            "sourceId": "finance",
+            "relation": "contradicts",
+            "confidence": 0.99
+          },
+          {
+            "sourceId": "interviews",
+            "relation": "insufficient",
+            "confidence": 0.99
+          }
+        ]
+      },
+      {
+        "assumptionId": "retention",
+        "status": "insufficient",
+        "question": "Did each pilot team use the product every week, beyond onboarding?",
+        "evidence": [
+          {
+            "sourceId": "founder",
+            "relation": "insufficient",
+            "confidence": 1
+          },
+          {
+            "sourceId": "finance",
+            "relation": "insufficient",
+            "confidence": 0.98
+          },
+          {
+            "sourceId": "interviews",
+            "relation": "insufficient",
+            "confidence": 0.98
+          }
+        ]
+      },
+      {
+        "assumptionId": "acquisition",
+        "status": "contradicts",
+        "question": "Which non-founder channel will the team test next, and how will they judge it?",
+        "evidence": [
+          {
+            "sourceId": "founder",
+            "relation": "insufficient",
+            "confidence": 1
+          },
+          {
+            "sourceId": "finance",
+            "relation": "insufficient",
+            "confidence": 0.86
+          },
+          {
+            "sourceId": "interviews",
+            "relation": "contradicts",
+            "confidence": 1
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "founder",
+        "title": "Founder update",
+        "attribution": "Fictional founder memo · September 15, 2026",
+        "text": "As of September 15, 2026, Northstar has received product payments from three customers: Atlas, Beacon and Cobalt. All three are in our logistics workflow pilot."
+      },
+      {
+        "id": "finance",
+        "title": "Finance note",
+        "attribution": "Fictional finance memo · September 15, 2026",
+        "text": "As of September 15, 2026, Atlas, Beacon and Cobalt are all on free pilots. Northstar has received no product payments from any customer. The payment claim in the founder update is incorrect."
+      },
+      {
+        "id": "interviews",
+        "title": "Pilot debrief",
+        "attribution": "Fictional interview notes · September 15, 2026",
+        "text": "Atlas and Beacon asked for a shared dispatch dashboard. Weekly product usage has not been measured. All customers came through founder introductions; no other acquisition channel has produced a customer as of September 15, 2026."
+      }
+    ],
+    "model": "jev-1.13.0",
+    "usage": {
+      "input_tokens": 4338,
+      "output_tokens": 472
+    },
+    "elapsedMs": 527
+  },
+  "updated": {
+    "assessments": [
+      {
+        "assumptionId": "payments",
+        "status": "mixed",
+        "question": "Why do the founder update and finance note disagree about payments?",
+        "evidence": [
+          {
+            "sourceId": "founder",
+            "relation": "supports",
+            "confidence": 1
+          },
+          {
+            "sourceId": "finance",
+            "relation": "contradicts",
+            "confidence": 0.99
+          },
+          {
+            "sourceId": "interviews",
+            "relation": "insufficient",
+            "confidence": 1
+          },
+          {
+            "sourceId": "note-1",
+            "relation": "insufficient",
+            "confidence": 0.99
+          }
+        ]
+      },
+      {
+        "assumptionId": "retention",
+        "status": "supports",
+        "question": "What did those teams do each week, and can we inspect the underlying activity logs?",
+        "evidence": [
+          {
+            "sourceId": "founder",
+            "relation": "insufficient",
+            "confidence": 1
+          },
+          {
+            "sourceId": "finance",
+            "relation": "insufficient",
+            "confidence": 0.97
+          },
+          {
+            "sourceId": "interviews",
+            "relation": "insufficient",
+            "confidence": 0.98
+          },
+          {
+            "sourceId": "note-1",
+            "relation": "supports",
+            "confidence": 1
+          }
+        ]
+      },
+      {
+        "assumptionId": "acquisition",
+        "status": "contradicts",
+        "question": "Which non-founder channel will the team test next, and how will they judge it?",
+        "evidence": [
+          {
+            "sourceId": "founder",
+            "relation": "insufficient",
+            "confidence": 1
+          },
+          {
+            "sourceId": "finance",
+            "relation": "insufficient",
+            "confidence": 0.84
+          },
+          {
+            "sourceId": "interviews",
+            "relation": "contradicts",
+            "confidence": 1
+          },
+          {
+            "sourceId": "note-1",
+            "relation": "insufficient",
+            "confidence": 1
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "founder",
+        "title": "Founder update",
+        "attribution": "Fictional founder memo · September 15, 2026",
+        "text": "As of September 15, 2026, Northstar has received product payments from three customers: Atlas, Beacon and Cobalt. All three are in our logistics workflow pilot."
+      },
+      {
+        "id": "finance",
+        "title": "Finance note",
+        "attribution": "Fictional finance memo · September 15, 2026",
+        "text": "As of September 15, 2026, Atlas, Beacon and Cobalt are all on free pilots. Northstar has received no product payments from any customer. The payment claim in the founder update is incorrect."
+      },
+      {
+        "id": "interviews",
+        "title": "Pilot debrief",
+        "attribution": "Fictional interview notes · September 15, 2026",
+        "text": "Atlas and Beacon asked for a shared dispatch dashboard. Weekly product usage has not been measured. All customers came through founder introductions; no other acquisition channel has produced a customer as of September 15, 2026."
+      },
+      {
+        "id": "note-1",
+        "title": "Analyst note 1",
+        "text": "Activity-log review for the six weeks ending September 15, 2026: Atlas, Beacon and Cobalt each used Northstar every week during that period. Each team created and completed dispatch workflows every week. This is a fictional analyst summary; the raw logs are not attached.",
+        "attribution": "User-added note · Unverified source statement"
+      }
+    ],
+    "model": "jev-1.13.0",
+    "usage": {
+      "input_tokens": 5829,
+      "output_tokens": 628
+    },
+    "elapsedMs": 819
+  }
+}

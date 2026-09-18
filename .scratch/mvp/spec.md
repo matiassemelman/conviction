@@ -31,7 +31,7 @@ An interactive English workspace for one clearly fictional startup, three fixed 
 - No silent replay. All analysis initiated explicitly, live results labeled; provider failures remain errors. Reset does not call provider.
 - Secret only in ignored local environment files and private hosting secret store. No secret in client code, artifacts, Git history, logs or Jev state.
 - Restrict POST origin, enforce streaming body limit, schema checks, timeout, bounded retries/concurrency; private hosting access preserved. No public paid-inference endpoint.
-- Re-run affected evidence when adding notes; complete request bounded by at most 21 judgments. Any latency/cost claims require actual measurement.
+- Re-run evidence when adding notes; complete analysis bounded by at most 21 judgments across at most seven source-isolated requests, at most three concurrent. Any latency/cost claims require actual measurement.
 
 ## Testing Decisions
 Use the end-to-end authorization to choose test seams without a new approval gate: assess-case behavior with an injected provider; HTTP input/error behavior; browser flow. Test observable output, errors, conflict preservation and freshness. Run a separate labeled live Jev corpus; do not confuse mocked tests with model accuracy. TDD in vertical slices where applicable. Browser QA is required by project contract. Jev advises planning, source semantics, UI wording and final review classification; deterministic tests and independent reviewers remain the correctness evidence.
@@ -47,3 +47,6 @@ Working analyst notebook: deep navy navigation, white evidence canvas, cobalt ac
 
 ## Completion
 Production build and behavior tests pass; live Jev case and corpus recorded with failures honestly reported; desktop/mobile browser flow checked; nonempty committed diff reviewed on Standards and Spec axes; findings fixed and affected checks repeated; private repository and usable app delivered if services permit.
+
+## Observed implementation adjustment
+Browser QA caught cross-source attribution in the original shared-state batch. The provider adapter now isolates each source, while batching its three independent assumption questions. A regression test enforces this request invariant; live evaluation checks the resulting per-source labels.

@@ -1,35 +1,50 @@
 # Conviction
 
-## Objective
-Build a small, convincing MVP to show Loop3: help an analyst see what supports or contradicts an assumption, identify what remains unknown and choose a useful next question. New evidence should visibly update the evaluation.
+A small venture diligence workspace powered by TypeSafe Jev. Inspect three assumptions about a fictional startup, read the sources behind each judgment, surface conflicts and add a note to see what changes.
 
-Matias selected this concept on 2026-09-16 and approved starting the proposed AI Hero workflow. Minimal code and maintainability are explicit requirements.
+## Run locally
 
-## Confirmed and proposed
-Confirmed: product direction, Loop3 audience, demonstrable MVP, minimal code.
-Proposed, not yet confirmed: one fictional startup, three assumptions, prepared source documents plus a new text note, English UI, a 90-second self-serve flow. Detailed state semantics and acceptance criteria remain open.
+Requires Node 24 and npm. From `web/`, run `npm ci`, copy `.env.example` to `.dev.vars`, set your TypeSafe key there, and run `npm run dev`. Use the printed local URL. Never commit `.dev.vars` or `.env*` files. To run the live evaluation script, place the same key in the ignored `.env.local` file.
 
-## First round of questions
-1. Self-serve interactive link or a demo Matias drives during a meeting?
-2. Prepared case plus free-text note, or arbitrary document uploads?
-3. Resolved 2026-09-18: Matias reports TypeSafe access enabled after completing the waitlist form. API key configuration and a real API request are not yet verified. Never capture a key in chat or docs.
+1. Click **Analyze with Jev**.
+2. Inspect the payment contradiction and the weekly-usage evidence gap.
+3. Select **Usage becomes a weekly habit**.
+4. Click **Use a fictional activity note**, then **Add note & analyze**.
+5. Inspect the changed assessment and original source trail.
 
-On 2026-09-18 Matias authorized end-to-end planning and execution. For this MVP the agent selected self-serve + prepared case and free-text notes under that delegation. See .scratch/mvp/spec.md; this supersedes the pending interview for the current implementation.
+Notes live only in browser memory and are sent to TypeSafe when you analyze. Refreshing or resetting clears them. This is a fictional demonstration, not an investment recommendation. Supported by a source does not mean independently verified.
 
-## Workflow
-Setup complete using the local Markdown configuration recommended in the accepted sequence. Next: grill-with-docs → bounded logic prototype if needed → compact to-spec → implement with TDD/codebase-design → exact-diff code-review and browser QA. To-tickets only if the actual spec needs it.
+## Architecture
 
-Planning report: /home/matias/Documents/Codex/2026-09-16/c/outputs/Conviction-secuencia-skills-MVP.md.
+`web/app/page.tsx` owns the interaction. `web/lib/assessment.ts` aggregates source judgments and selects authored follow-up questions. `web/lib/server/jev.ts` calls the official TypeSafe HTTP API, checks the typed response and limits each request to one source. `web/app/api/assess/route.ts` keeps credentials on the server.
 
-TypeSafe integration research and proposed scope: [docs/typesafe-fit.md](docs/typesafe-fit.md). Official documentation reviewed on 2026-09-18; no live inference tested. The recommendation preserves the pending product decisions above.
+Each source gets one request containing the three independent assumption questions. Up to three requests run concurrently, with a 40-second overall timeout. Sources are never placed together in one provider request: browser QA caught cross-source contamination in the earlier batch design. At most four notes of 2000 characters are accepted; all existing sources remain visible. No database, vector store, autonomous agents or second model.
 
-## Evidence and limits
-Loop3 publishes sourcing, historical snapshots and contextual intelligence: https://www.loop3.ai/case-studies/sourcing-platform and https://www.loop3.ai/news/the-real-ai-advantage-isn-t-chat-gpt-or-claude-it-s-context . Conviction is our portfolio hypothesis, not a Loop3 commission or validated buyer request.
-Jev documentation: https://docs.typesafe.ai/introduction . Account access was confirmed by Matias on 2026-09-18; runtime integration remains unverified. Classification is distinct from generating the next question; the latter's simplest useful implementation must be settled in shaping.
+The deployment is owner-private through Sites. The request origin check and per-isolate concurrency guard are defense in depth, not a public API authentication system. Do not expose this paid-inference endpoint publicly without adding appropriate access and usage controls.
 
-## Skills provenance
-Ten project-local skills from mattpocock/skills, commit 959a8e9f1edc3adbe2f7e3054bb6fbefa6696260. Their support files were installed with them. Global skills untouched. No implementation, deployed product, provider execution or external contact is claimed.
+## Checks
 
+From `web/`:
 
-## TypeSafe skill
-Installed the official typesafe-ai skill locally for Codex on 2026-09-18 using only `npx skills add typesafe-ai/skills --skill typesafe-ai --agent codex --yes`. Entry: `.agents/skills/typesafe-ai/SKILL.md`; source and content hash recorded in `skills-lock.json`. Read in full after installation. Use it alongside the AI Hero workflow for this project. No API call or credential change was made during installation.
+- `npm test`: behavior, source preservation, provider validation and HTTP input/error tests.
+- `npm run typecheck` and `npm run lint`: application checks. The untouched generated UI catalog and its mobile hook are excluded from lint; the consumed primitives are covered by typechecking and browser QA.
+- `npm run build`: production build.
+- `node --env-file=.env.local --experimental-strip-types scripts/evaluate.ts`: real Jev calls on the labeled synthetic corpus and the before/after demo. Uses your provider quota. Writes non-secret receipts under `docs/jev/`.
+
+Run `python3 scripts/check-secrets.py` from the repository root before every commit. It scans staged files for the configured key and credential-shaped strings. Production output is separately scanned before packaging.
+
+## Scope and evidence
+
+Implementation spec: [.scratch/mvp/spec.md](.scratch/mvp/spec.md). Current state: [CURRENT.md](CURRENT.md). TypeSafe research: [docs/typesafe-fit.md](docs/typesafe-fit.md). Live stage receipts: [docs/jev](docs/jev).
+
+Matias selected Conviction on 2026-09-16 and authorized end-to-end planning, repository creation, implementation and code review on 2026-09-18. Self-serve flow, prepared fictional case, text notes, English UI and private hosting were selected under that delegation. Jev contributes typed judgments at planning, design, implementation/evaluation and review stages; it does not generate this application or replace deterministic checks and independent code review.
+
+The live corpus is small and synthetic. Initial prompt: 10/11; the conflicting-statements case needed a clearer rubric. These results are iteration evidence, not an estimate of general investment-analysis accuracy. See the final validation report for current results and limits.
+
+## Provenance
+
+Project-local AI Hero skills are pinned to `mattpocock/skills` revision `959a8e9f1edc3adbe2f7e3054bb6fbefa6696260` (see `AGENTS.md` for the full canonical revision). Official TypeSafe skill installed through `npx skills` on 2026-09-18 and recorded in `skills-lock.json`.
+
+Sites scaffold retains its provided UI primitives and lockfile. Vulnerable scaffold dependencies were updated together to compatible patched releases; no forced dependency overrides were used.
+
+Conviction is a portfolio hypothesis for the Loop3 opportunity, not a Loop3 commission or a validated buyer request.

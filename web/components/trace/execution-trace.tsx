@@ -20,7 +20,15 @@ const errors = {
   network_or_timeout: 'Network failure or timeout',
   invalid_response: 'Response failed validation',
 };
-function SourceSpan({ source, total }: { source: SourceTrace; total: number }) {
+function SourceSpan({
+  source,
+  total,
+  providerLabel,
+}: {
+  source: SourceTrace;
+  total: number;
+  providerLabel: string;
+}) {
   const start = source.startMs ?? 0;
   return (
     <Collapsible className={`trace-source ${source.status}`}>
@@ -105,7 +113,7 @@ function SourceSpan({ source, total }: { source: SourceTrace; total: number }) {
               )}
               <div className="trace-payloads">
                 <details>
-                  <summary>Request body sent to Jev</summary>
+                  <summary>Request body sent to {providerLabel}</summary>
                   <pre>{JSON.stringify(source.request, null, 2)}</pre>
                 </details>
                 <details>
@@ -113,8 +121,9 @@ function SourceSpan({ source, total }: { source: SourceTrace; total: number }) {
                   {source.response ? (
                     <>
                       <p className="source-meta">
-                        Confidence is distribution concentration, not
-                        correctness or business truth.
+                        When provided, confidence is distribution concentration,
+                        not correctness or business truth. OpenAI does not
+                        supply an equivalent score here.
                       </p>
                       <pre>{JSON.stringify(source.response, null, 2)}</pre>
                     </>
@@ -138,12 +147,14 @@ export function ExecutionTrace({
   previous,
   busy,
   unavailable,
+  providerLabel = 'Jev',
 }: {
   trace: RunTrace | null;
   result: CaseResult | null;
   previous: CaseResult | null;
   busy: boolean;
   unavailable: boolean;
+  providerLabel?: string;
 }) {
   if (!trace)
     return (
@@ -186,7 +197,7 @@ export function ExecutionTrace({
               ? 'The latest attempt returned no server trace. This is the previous recorded run.'
               : busy
                 ? 'A new run is in progress. This is the previous recorded run.'
-                : 'Captured from the actual execution. Expand a source to inspect what Jev received and returned.'}
+                : `Captured from the actual execution. Expand a source to inspect what ${providerLabel} received and returned.`}
           </p>
           <div className="trace-meta">
             <span>
@@ -229,7 +240,8 @@ export function ExecutionTrace({
                 <div>
                   <strong>{step.name}</strong>
                   <span>
-                    {step.kind === 'model' ? 'Jev' : 'Application code'} ·{' '}
+                    {step.kind === 'model' ? providerLabel : 'Application code'}{' '}
+                    ·{' '}
                     {step.status === 'skipped'
                       ? 'Not run'
                       : `${duration(step.durationMs)} · ${step.status}`}
@@ -248,6 +260,7 @@ export function ExecutionTrace({
                 key={source.sourceId}
                 source={source}
                 total={trace.durationMs}
+                providerLabel={providerLabel}
               />
             ))}
           </div>
@@ -303,7 +316,7 @@ export function ExecutionTrace({
             </p>
           )}
           <p className="trace-footnote">
-            This is an execution record, not Jev’s hidden reasoning. It stays in
+            This is an execution record, not hidden model reasoning. It stays in
             this browser session; refreshing or resetting clears it.
             Authorization headers and credentials are never recorded.
           </p>

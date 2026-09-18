@@ -54,9 +54,9 @@ async function readNotes(request: Request): Promise<string[]> {
     return note.trim();
   });
 }
-export async function handleAssessment(
+export async function handleAnalysisRequest(
   request: Request,
-  evaluate: Evaluate,
+  analyze: (notes: string[]) => Promise<unknown>,
 ): Promise<Response> {
   const origin = request.headers.get('origin');
   if (!origin || origin !== new URL(request.url).origin)
@@ -74,7 +74,7 @@ export async function handleAssessment(
     );
   }
   try {
-    return response(await assessCase(notes, evaluate));
+    return response(await analyze(notes));
   } catch (error) {
     return response(
       {
@@ -85,4 +85,11 @@ export async function handleAssessment(
       502,
     );
   }
+}
+
+export function handleAssessment(
+  request: Request,
+  evaluate: Evaluate,
+): Promise<Response> {
+  return handleAnalysisRequest(request, (notes) => assessCase(notes, evaluate));
 }

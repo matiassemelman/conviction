@@ -1,12 +1,12 @@
 # Conviction
 
-Private demo: https://conviction-matias.matiassemelman.chatgpt.site
+Private deployment: Vercel (current URL in CURRENT.md). Previous Sites demo remains an older trace-only release.
 
-A small venture diligence workspace powered by TypeSafe Jev. Inspect three assumptions about a fictional startup, read the sources behind each judgment, surface conflicts and add a note to see what changes.
+A small venture diligence workspace with TypeSafe Jev and a side-by-side comparison against GPT-5.6 Luna and Terra. Inspect three assumptions about a fictional startup, read the sources behind each judgment, surface conflicts and add a note to see what changes.
 
 ## Run locally
 
-Requires Node 24 and npm. From `web/`, run `npm ci`, copy `.env.example` to `.dev.vars`, set your TypeSafe key there, and run `npm run dev`. Use the printed local URL. Never commit `.dev.vars` or `.env*` files. To run the live evaluation script, place the same key in the ignored `.env.local` file.
+Requires Node 24 and npm. From `web/`, run `npm ci`, copy `.env.example` to `.env.local`, set your TypeSafe and OpenAI keys there, and run `npm run dev`. Use the printed local URL. Never commit `.dev.vars` or `.env*` files.
 
 1. Click **Analyze with Jev**.
 2. Expand **Execution trace** to inspect timings, parallel requests, exact request bodies and validated Jev answers. Open **How the application used these answers** for the deterministic rules and before/after changes.
@@ -17,15 +17,23 @@ Requires Node 24 and npm. From `web/`, run `npm ci`, copy `.env.example` to `.de
 
 The latest execution trace stays visible after fast runs and includes partial failures. It records observable events, not hidden model reasoning. Reported token usage is incomplete when requests fail or retry; credentials and authorization headers are excluded. Trace details live only in component memory and clear on reset or refresh. See [trace validation](docs/trace-validation.md).
 
-Notes live only in browser memory and are sent to TypeSafe when you analyze. Refreshing or resetting clears them. This is a fictional demonstration, not an investment recommendation. Supported by a source does not mean independently verified.
+Notes live only in browser memory and are sent to TypeSafe when you analyze, and to both TypeSafe and OpenAI when you compare. Refreshing or resetting clears them. This is a fictional demonstration, not an investment recommendation. Supported by a source does not mean independently verified.
 
 ## Architecture
 
 `web/app/page.tsx` owns the interaction. `web/lib/assessment.ts` aggregates source judgments and selects authored follow-up questions. `web/lib/server/jev.ts` calls the official TypeSafe HTTP API, checks the typed response and limits each request to one source. `web/app/api/assess/route.ts` keeps credentials on the server.
 
-Each source gets one request containing the three independent assumption questions. Up to three requests run concurrently, with a 40-second overall timeout. At most seven logical source evaluations (21 judgments) are needed; one retry per source on 429/529 permits at most 14 HTTP attempts (42 transmitted questions). Sources are never placed together in one provider request: browser QA caught cross-source contamination in the earlier batch design. At most four notes of 2000 characters are accepted; all existing sources remain visible. No database, vector store, autonomous agents or second model.
+Each source gets one request containing the three independent assumption questions. Up to three requests run concurrently, with a 40-second overall timeout. At most seven logical source evaluations (21 judgments) are needed; one retry per source on 429/529 permits at most 14 HTTP attempts (42 transmitted questions). Sources are never placed together in one provider request: browser QA caught cross-source contamination in the earlier batch design. At most four notes of 2000 characters are accepted; all existing sources remain visible. Comparison runs all three models independently with the same source grouping and concurrency. OpenAI uses the same relation rubric with strict structured output and reasoning disabled. A failed model does not erase another model’s result. No database, vector store or autonomous agents.
 
-The deployment is owner-private through Sites. The request origin check and per-isolate concurrency guard are defense in depth, not a public API authentication system. Do not expose this paid-inference endpoint publicly without adding appropriate access and usage controls.
+The Vercel project uses Vercel Authentication for all deployments, including production. The request origin check and per-isolate concurrency guard are defense in depth, not a public API authentication system. Do not expose this paid-inference endpoint publicly without adding appropriate access and usage controls.
+
+## Model comparison
+
+Click **Compare current case** to run Jev, Luna and Terra on the current sources. Each result has elapsed time, estimated USD cost and its own execution trace. Free-form cases show model agreement, not accuracy. Costs use reported input/cache/output tokens and dated public rates, not billing receipts; incomplete usage is labeled.
+
+The recorded benchmark uses 16 new synthetic cases, four per relation, frozen before the first run and repeated three times. All three models matched 48/48 labels. That ceiling on a small synthetic set does not establish equal general accuracy. Jev was faster by median and cheaper in this sample. See [method and results](docs/comparison/validation.md), [frozen labels](web/evaluation/holdout.json), and [raw receipts](docs/comparison/receipts.json).
+
+To rerun the benchmark explicitly (144 paid provider calls), run `node --env-file=.env.local --experimental-strip-types scripts/benchmark.ts` from `web/`. Page loads never rerun it.
 
 ## Checks
 
@@ -50,6 +58,6 @@ The live corpus is small and synthetic. Initial prompt: 10/11; the conflicting-s
 
 Project-local AI Hero skills are pinned to `mattpocock/skills` revision `959a8e9f1edc3adbe2f7e3054bb6fbefa6696260` (see `AGENTS.md` for the full canonical revision). Official TypeSafe skill installed through `npx skills` on 2026-09-18 and recorded in `skills-lock.json`.
 
-Sites scaffold retains its provided UI primitives and lockfile. Vulnerable scaffold dependencies were updated together to compatible patched releases; no forced dependency overrides were used.
+The original Sites scaffold retains its provided UI primitives; the runtime is now standard Next.js for Vercel. The former hosting manifest is archived in docs/sites-hosting-archive.json. Vulnerable scaffold dependencies were updated together to compatible patched releases; no forced dependency overrides were used.
 
 Conviction is a portfolio hypothesis for the Loop3 opportunity, not a Loop3 commission or a validated buyer request.

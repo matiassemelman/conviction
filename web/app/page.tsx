@@ -1,5 +1,6 @@
 'use client';
 import { useRef, useState } from 'react';
+import { ModelComparison } from '@/components/comparison/model-comparison';
 import { ExecutionTrace } from '@/components/trace/execution-trace';
 import type { RunTrace } from '@/lib/trace';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,9 @@ export default function Home() {
   const [notes, setNotes] = useState<string[]>([]);
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(false);
+  const [comparisonBusy, setComparisonBusy] = useState(false);
+  const [resetVersion, setResetVersion] = useState(0);
+  const locked = busy || comparisonBusy;
   const [error, setError] = useState('');
   const [trace, setTrace] = useState<RunTrace | null>(null);
   const [traceUnavailable, setTraceUnavailable] = useState(false);
@@ -31,7 +35,7 @@ export default function Home() {
   const prior = previous?.assessments.find((a) => a.assumptionId === selected);
   const sources = result?.sources ?? baseSources;
   async function analyze(addNote = false) {
-    if (inFlight.current) return;
+    if (inFlight.current || comparisonBusy) return;
     const nextNotes = addNote ? [...notes, draft.trim()] : notes;
     if (
       addNote &&
@@ -82,7 +86,8 @@ export default function Home() {
     }
   }
   function reset() {
-    if (inFlight.current) return;
+    if (inFlight.current || comparisonBusy) return;
+    setResetVersion((value) => value + 1);
     setResult(null);
     setPrevious(null);
     setNotes([]);
@@ -117,17 +122,14 @@ export default function Home() {
               variant="outline"
               className="secondary h-auto"
               onClick={reset}
-              disabled={
-                busy ||
-                (!result && !draft && !trace && !error && !traceUnavailable)
-              }
+              disabled={locked}
             >
               Reset case
             </Button>
             <Button
               className="primary h-auto"
               onClick={() => analyze()}
-              disabled={busy}
+              disabled={locked}
             >
               {busy
                 ? 'Analyzing sources…'
@@ -164,6 +166,12 @@ export default function Home() {
             </div>
           )}
         </div>
+        <ModelComparison
+          key={`${resetVersion}:${JSON.stringify(notes)}`}
+          notes={notes}
+          disabled={busy}
+          onBusyChange={setComparisonBusy}
+        />
         <ExecutionTrace
           trace={trace}
           result={result}
@@ -215,7 +223,7 @@ export default function Home() {
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 maxLength={2000}
-                disabled={busy || notes.length >= 4}
+                disabled={locked || notes.length >= 4}
                 placeholder="Paste an interview excerpt, observation or evidence summary…"
                 aria-describedby="note-limit"
               />
@@ -224,7 +232,7 @@ export default function Home() {
                   variant="link"
                   className="link-button h-auto px-0"
                   onClick={() => setDraft(sampleNote)}
-                  disabled={busy || notes.length >= 4}
+                  disabled={locked || notes.length >= 4}
                 >
                   Use a fictional activity note
                 </Button>
@@ -234,7 +242,9 @@ export default function Home() {
               </div>
               <Button
                 className="primary h-auto"
-                disabled={busy || draft.trim().length < 2 || notes.length >= 4}
+                disabled={
+                  locked || draft.trim().length < 2 || notes.length >= 4
+                }
                 onClick={() => analyze(true)}
               >
                 Add note & analyze
@@ -293,7 +303,7 @@ export default function Home() {
                       </div>
                       <blockquote>{source.text}</blockquote>
                       <p className="source-meta">{source.attribution}</p>
-                      {judgment && (
+                      {judgment?.confidence !== undefined && (
                         <details className="source-meta">
                           <summary>Judgment detail</summary>
                           <p>

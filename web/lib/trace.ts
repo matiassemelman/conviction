@@ -1,19 +1,16 @@
 import type { Relation } from './assessment.ts';
-export type Usage = { input_tokens: number; output_tokens: number };
-export type TraceStatus = 'completed' | 'failed' | 'skipped';
-export type ProviderRequest = {
-  model: string;
-  state: { pairs: { claim: string; source: string }[] };
-  questions: Record<
-    string,
-    { type: string; instructions: string; criteria: Record<string, string> }
-  >;
+export type Usage = {
+  input_tokens: number;
+  output_tokens: number;
+  cached_input_tokens?: number;
 };
+export type TraceStatus = 'completed' | 'failed' | 'skipped';
+export type ProviderRequest = Record<string, unknown>;
 export type TraceAnswer = {
   assumptionId: string;
   relation: Relation;
-  confidence: number;
-  probabilities: Record<Relation, number>;
+  confidence?: number;
+  probabilities?: Record<Relation, number>;
 };
 export type RequestAttempt = {
   number: number;
@@ -68,4 +65,12 @@ export class AssessmentFailure extends Error {
     this.name = 'AssessmentFailure';
     this.trace = trace;
   }
+}
+
+export function addUsage(total: Usage, usage: Usage): void {
+  total.input_tokens += usage.input_tokens;
+  total.output_tokens += usage.output_tokens;
+  if (usage.cached_input_tokens !== undefined)
+    total.cached_input_tokens =
+      (total.cached_input_tokens ?? 0) + usage.cached_input_tokens;
 }

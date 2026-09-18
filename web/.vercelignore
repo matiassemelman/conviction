@@ -1,0 +1,8 @@
+.env*
+.dev.vars*
+.wrangler
+.next
+dist
+node_modules
+outputs
+work

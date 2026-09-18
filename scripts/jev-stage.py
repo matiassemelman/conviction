@@ -6,7 +6,7 @@ root = Path(__file__).resolve().parents[1]
 stage = sys.argv[1]
 request_path = Path(sys.argv[2])
 request = json.loads(request_path.read_text())
-secret = (root / 'web/.env.local').read_text().strip().split('=', 1)[1]
+secret = dict(line.split('=', 1) for line in (root / 'web/.env.local').read_text().splitlines() if '=' in line)['TYPESAFE_API_KEY']
 request.setdefault('model', 'jev-latest')
 assert secret not in json.dumps(request), 'Secret must never enter model state'
 started = time.monotonic()

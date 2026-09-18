@@ -1,5 +1,5 @@
-import { AssessmentFailure, measuredMs } from './trace.ts';
-import type { RunTrace, TraceContext } from './trace.ts';
+import { addUsage, AssessmentFailure, measuredMs } from './trace.ts';
+import type { RunTrace, TraceContext, Usage } from './trace.ts';
 export type Relation = 'supports' | 'contradicts' | 'mixed' | 'insufficient';
 export function aggregate(relations: Relation[]): Relation {
   if (
@@ -17,13 +17,13 @@ import type { Source, Assumption } from './case.ts';
 export type Pair = { assumption: Assumption; source: Source };
 export type Judgment = Pair & {
   relation: Relation;
-  confidence: number;
+  confidence?: number;
   probabilities?: Record<Relation, number>;
 };
 export type Evaluation = {
   model: string;
   judgments: Judgment[];
-  usage: { input_tokens: number; output_tokens: number };
+  usage: Usage;
 };
 export type Evaluate = (
   pairs: Pair[],
@@ -33,7 +33,7 @@ export type Assessment = {
   assumptionId: string;
   status: Relation;
   question: string;
-  evidence: { sourceId: string; relation: Relation; confidence: number }[];
+  evidence: { sourceId: string; relation: Relation; confidence?: number }[];
 };
 export type CaseResult = {
   assessments: Assessment[];
@@ -52,6 +52,7 @@ export const statusLabels: Record<Relation, string> = {
 export async function assessCase(
   notes: string[],
   evaluate: Evaluate,
+  providerLabel = 'Jev',
 ): Promise<CaseResult> {
   const started = performance.now();
   const startedAt = new Date().toISOString();
@@ -108,7 +109,7 @@ export async function assessCase(
     });
   } catch {
     trace.steps.push({
-      name: 'Jev judgments',
+      name: `${providerLabel} judgments`,
       kind: 'model',
       status: 'failed',
       startMs: preparedMs,
@@ -125,14 +126,13 @@ export async function assessCase(
     for (const source of trace.sources) {
       const usage = source.response?.usage ?? source.reportedUsage;
       if (usage) {
-        trace.usage.input_tokens += usage.input_tokens;
-        trace.usage.output_tokens += usage.output_tokens;
+        addUsage(trace.usage, usage);
       }
     }
     throw new AssessmentFailure(trace);
   }
   trace.steps.push({
-    name: 'Jev judgments',
+    name: `${providerLabel} judgments`,
     kind: 'model',
     status: 'completed',
     startMs: preparedMs,

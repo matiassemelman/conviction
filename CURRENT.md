@@ -11,3 +11,9 @@ Deployment: Sites version 2; deployment succeeded using environment revision 1. 
 Credential: ignored local environment files and Sites secret store only; absent from Git history and deployment archive. No credential committed.
 Trace: latest-run request bodies, validated answers, shared timing bars, HTTP attempts, reported usage and deterministic before/after rules. No durable history or hidden reasoning.
 Next: owner acceptance of the fictional case and interaction. Public sharing, arbitrary uploads and real company evidence remain out of scope.
+
+## Comparison implementation — 2026-09-18
+
+Luna and Terra access is resolved and actual model calls pass. Comparison is implemented with real per-provider traces, independent failures and estimated costs. Frozen benchmark: 16 distinct synthetic cases × three repetitions; each model 48/48, no failures. See docs/comparison/validation.md for costs, latency and limits.
+
+Runtime migrated to Next.js for Vercel. Both provider keys are configured in ignored local files and encrypted Vercel variables. The new Vercel project uses Authentication on all deployments. Local checks pass; final comparison code review and deployment verification are underway. Previous Sites release above is unchanged.

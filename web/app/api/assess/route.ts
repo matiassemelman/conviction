@@ -1,5 +1,6 @@
 import { handleAssessment } from '@/lib/server/http';
 import { evaluatePairs } from '@/lib/server/jev';
+export const maxDuration = 60;
 let active = false;
 export async function POST(request: Request) {
   if (active)

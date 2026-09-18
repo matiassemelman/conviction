@@ -202,3 +202,67 @@ for (const [label, response, expected] of [
     assert.equal(data.trace.sources[0].attempts[0].httpStatus, 200);
   });
 }
+
+void test('OpenAI partial failure retains cached usage and names the selected provider', async () => {
+  const { evaluateOpenAI } = await import('../lib/server/openai.ts');
+  const { AssessmentFailure } = await import('../lib/trace.ts');
+  let calls = 0;
+  await assert.rejects(
+    () =>
+      assessCase(
+        [],
+        (pairs, trace) =>
+          evaluateOpenAI(
+            pairs,
+            'secret',
+            'gpt-5.6-terra',
+            async () => {
+              calls++;
+              return Response.json({
+                model: 'gpt-5.6-terra',
+                status: 'completed',
+                output: [
+                  {
+                    type: 'message',
+                    status: 'completed',
+                    role: 'assistant',
+                    content: [
+                      {
+                        type: 'output_text',
+                        text:
+                          calls === 1
+                            ? '{}'
+                            : JSON.stringify({
+                                relation_0: 'supports',
+                                relation_1: 'insufficient',
+                                relation_2: 'contradicts',
+                              }),
+                      },
+                    ],
+                  },
+                ],
+                usage: {
+                  input_tokens: 100,
+                  output_tokens: 10,
+                  input_tokens_details: { cached_tokens: 20 },
+                },
+              });
+            },
+            trace,
+          ),
+        'GPT-5.6 Terra',
+      ),
+    (error) => {
+      assert.ok(error instanceof AssessmentFailure);
+      assert.equal(error.trace.steps[1].name, 'GPT-5.6 Terra judgments');
+      assert.equal(error.trace.usage.cached_input_tokens, 60);
+      assert.equal(error.trace.usage.input_tokens, 300);
+      assert.equal(error.trace.usage.complete, false);
+      assert.equal(
+        error.trace.sources.filter((s) => s.status === 'completed').length,
+        2,
+      );
+      return true;
+    },
+  );
+});

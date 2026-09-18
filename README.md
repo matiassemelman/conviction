@@ -1,5 +1,7 @@
 # Conviction
 
+Private demo: https://conviction-matias.matiassemelman.chatgpt.site
+
 A small venture diligence workspace powered by TypeSafe Jev. Inspect three assumptions about a fictional startup, read the sources behind each judgment, surface conflicts and add a note to see what changes.
 
 ## Run locally
@@ -39,7 +41,7 @@ Implementation spec: [.scratch/mvp/spec.md](.scratch/mvp/spec.md). Current state
 
 Matias selected Conviction on 2026-09-16 and authorized end-to-end planning, repository creation, implementation and code review on 2026-09-18. Self-serve flow, prepared fictional case, text notes, English UI and private hosting were selected under that delegation. Jev contributes typed judgments at planning, design, implementation/evaluation and review stages; it does not generate this application or replace deterministic checks and independent code review.
 
-The live corpus is small and synthetic. Initial prompt: 10/11; the conflicting-statements case needed a clearer rubric. These results are iteration evidence, not an estimate of general investment-analysis accuracy. See the final validation report for current results and limits.
+The live corpus is small and synthetic. Initial prompt: 10/11; the conflicting-statements case needed a clearer rubric. These results are iteration evidence, not an estimate of general investment-analysis accuracy. See [the validation and review report](docs/validation.md) for current results and limits.
 
 ## Provenance
 

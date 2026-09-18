@@ -13,7 +13,7 @@ Independent read-only reviewer found one P2 documentation mismatch: seven logica
 - 15/15 behavior tests pass, including conflicts, source preservation, failures, body/note limits, origin checks, invalid provider responses, source isolation and bounded retries.
 - Typecheck, application lint and production build pass. Generated untouched UI catalog is excluded from lint; consumed components are typechecked and exercised in browser.
 - Dependency audit after compatible security updates: zero known vulnerabilities reported by npm. This is a point-in-time scanner result, not a security guarantee.
-- Exact configured key absent from all 91 production output files in the inspected build. Staged credential scan passed before each implementation commit; final history and archive scans are performed before delivery.
+- Exact configured key absent from all 91 production output files in the inspected build. Staged credential scan passed before each implementation commit; final history scan passed across all local revisions; the packaged archive scan passed across all 91 files.
 
 ## Live Jev evaluation
 
@@ -43,3 +43,14 @@ Used the same local browser tab at `http://localhost:3001/` throughout.
 ## Limits
 
 The synthetic corpus and fictional case do not prove real-world diligence accuracy or prompt-injection resistance. No automatic correctness threshold is calibrated. Results require human review. Notes are not persisted. Private hosting is required for this demo; origin checks and per-isolate concurrency are not a substitute for a public API access/budget design. Owner acceptance remains separate from technical QA.
+
+
+## Private delivery
+
+- GitHub: https://github.com/matiassemelman/conviction — private, main pushed.
+- Live app: https://conviction-matias.matiassemelman.chatgpt.site
+- Sites source revision: `d026c2a08bb5e2492ed1c60e94df4d98a17f829e`, a source-only split of the validated web directory. Version 1; deployment `appgdep_6aad5556c5c08191afd137d0188757de` succeeded with environment revision 1.
+- Access readback: owner role; custom policy with one allowed user, no groups and no external viewers. Unauthenticated POST to the inference endpoint returned 401.
+- Published browser run succeeded with live Jev: initial analysis 0.9 seconds, added-note analysis 1.2 seconds. Weekly usage changed from evidence gap to source-supported; payment conflict remained. These are individual observations.
+- API key configured as a secret in the hosting environment; value was not returned by the settings tool and is absent from source/build/archive.
+- Delivery-stage Jev advisory receipt confirms bounded summary wording and owner-only audience; actual deployment success and access evidence come from the hosting service and browser, not Jev.

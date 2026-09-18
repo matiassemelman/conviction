@@ -1,0 +1,60 @@
+{
+  "stage": "delivery",
+  "request": {
+    "state": {
+      "delivery": "Private GitHub repository. Owner-private hosted demo. Explicit user request: plan, create repo, build everything and code review; never commit the API key.",
+      "verification": "Independent Standards review: zero findings. Spec retry-budget finding closed. 15 deterministic tests, typecheck, lint and build passed. Development corpus 11/11 after rubric correction and source isolation. Exact credential absent from Git history and deployment archive. No general model-accuracy claim.",
+      "candidate_summary": "Functional fictional demo, source-linked judgments, private access. Tests pass, but source assertions still require human review."
+    },
+    "questions": {
+      "claim_scope": {
+        "type": "choice",
+        "instructions": "Does candidate_summary keep the demonstrated result separate from a claim of verified real-world startup facts?",
+        "criteria": {
+          "bounded": "Describes fictional demo and human review without claiming verified startup facts.",
+          "overclaim": "Claims reliable real-world truth or investment outcomes.",
+          "unclear": "Cannot decide."
+        }
+      },
+      "audience": {
+        "type": "choice",
+        "instructions": "Which audience fits the documented delivery and keeps the provider-backed demo within its current access design?",
+        "criteria": {
+          "owner_only": "Preserve private access for the owner.",
+          "public": "Expose the demo to everyone without additional access or usage controls."
+        }
+      }
+    },
+    "model": "jev-latest"
+  },
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "claim_scope": {
+        "type": "choice",
+        "choice": "bounded",
+        "confidence": 1.0,
+        "probabilities": {
+          "unclear": 0.0,
+          "overclaim": 0.0,
+          "bounded": 1.0
+        }
+      },
+      "audience": {
+        "type": "choice",
+        "choice": "owner_only",
+        "confidence": 1.0,
+        "probabilities": {
+          "owner_only": 1.0,
+          "public": 0.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 570,
+      "output_tokens": 74
+    }
+  },
+  "elapsed_ms": 965,
+  "note": "Advisory judgment, not proof of correctness."
+}

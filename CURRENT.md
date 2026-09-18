@@ -1,10 +1,12 @@
 # Current
 
-Stage: implementation and review complete; private delivery being finalized.
+Stage: MVP implemented, reviewed and privately deployed on 2026-09-18.
 Owner: README.md. Spec: .scratch/mvp/spec.md.
-Scope: self-serve fictional case, three assumptions, prepared sources plus up to four text notes; English UI; owner-private Sites deployment.
-Jev: real planning/design/review judgments and live product evaluation. Source isolation fixes cross-source contamination discovered in browser QA. Current development corpus 11/11; 15 deterministic tests, lint/typecheck/build pass.
-Review: Standards 0 findings. Spec 1 documentation finding about retry budget, fixed and verified closed. Evidence in docs/validation.md and docs/jev/.
-Credential: ignored local environment files and Sites secret store only; never committed. Final history/archive checks pending delivery.
-Repository: https://github.com/matiassemelman/conviction (private).
-Next: finish owner-private deployment verification and record final URL. No public sharing or outreach.
+App: https://conviction-matias.matiassemelman.chatgpt.site
+Repository: https://github.com/matiassemelman/conviction (private, main).
+Scope: self-serve fictional case, three assumptions, prepared sources plus up to four text notes; English UI; owner-only access.
+Jev: real planning/design/review/delivery judgments plus live product evaluation. Source-isolated requests fix cross-source contamination discovered in browser QA. Development corpus 11/11; 15 deterministic tests, lint/typecheck/build pass.
+Review: Standards 0 findings. Spec 1 retry-budget documentation finding, fixed and independently closed. Evidence: docs/validation.md and docs/jev/.
+Deployment: Sites version 1; deployment succeeded using environment revision 1. Published browser initial analysis and added-note update both passed. Unauthenticated inference returned 401. Access confirms one owner, no groups or external viewers.
+Credential: ignored local environment files and Sites secret store only; absent from Git history and deployment archive. No credential committed.
+Next: owner acceptance of the fictional case and interaction. Public sharing, arbitrary uploads and real company evidence remain out of scope.

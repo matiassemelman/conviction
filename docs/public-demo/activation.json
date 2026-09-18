@@ -30,5 +30,20 @@
   "invalidInputBurst": {
     "400": 19,
     "429": 1
+  },
+  "finalDeployment": "dpl_6L9YDoxS6BYngNeRWDpTsWRXZRbS",
+  "finalCodeCheckpoint": "3cff9e4",
+  "repository": {
+    "url": "https://github.com/matiassemelman/conviction",
+    "visibility": "PUBLIC",
+    "anonymousStatus": 200,
+    "readmeRelativeLinks": 19,
+    "historyBlobsScanned": 244
+  },
+  "headerQA": {
+    "desktop": "pass",
+    "mobile": "pass",
+    "clientWidth": 341,
+    "scrollWidth": 341
   }
 }

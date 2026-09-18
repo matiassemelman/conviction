@@ -1,6 +1,6 @@
 # Public demo rollout — 2026-09-18
 
-User authorized anonymous link sharing and bounded paid inference. Base: 479ec8c. Public activation is complete; source visibility and header link are being finalized.
+User authorized anonymous link sharing and bounded paid inference. Base: 479ec8c. Public activation and public source release are complete.
 
 ## Policy
 - Shared allowance: 20 admitted live executions per UTC day across assess and compare, all production instances and new deployments. Owner may set DEMO_DAILY_LIMIT to an integer 1–100.
@@ -41,3 +41,10 @@ Final Standards review: 0 findings. Spec review prompted safe handling of non-JS
 - Public alias returned HTTP 200 with the app; browser without Vercel login completed a Jev run on three sources (312 ms measured provider stage).
 - Old immutable URL conviction-e2jv5azls-matiassemelmans-projects.vercel.app and current immutable URL both returned HTTP 302 redirects to Vercel login, checked without following redirects.
 - Anonymous invalid-input API burst: 19 HTTP 400 responses followed by HTTP 429 from the edge rule. Invalid requests did not reserve model allowance.
+
+## Public source and final deployment
+- GitHub visibility PUBLIC; anonymous GitHub API and raw README/comparison report returned HTTP 200. The repository About section links to the demo.
+- All 19 relative README targets are tracked and exist. Exact configured-secret/pattern scan covered 244 historical blobs with no matches; independent semantic review found no confidential/client material.
+- Header link points to https://github.com/matiassemelman/conviction. Desktop/mobile browser checks pass; mobile document clientWidth and scrollWidth both 341 CSS pixels in the browser test viewport.
+- Final deployment dpl_6L9YDoxS6BYngNeRWDpTsWRXZRbS, checkpoint 3cff9e4. A cached build omitted new header CSS; rebuilding without cache restored the expected stylesheet and passed visual QA.
+- Final public-source diff reviews: Standards 0 findings, Spec 0 findings. 39 tests, typecheck, lint and clean production build pass.

@@ -42,18 +42,33 @@ export function ModelComparison({
         body: JSON.stringify({ notes }),
         signal: AbortSignal.timeout(50000),
       });
-      const data = (await response.json()) as Comparison & {
+      const data = (await response.json().catch(() => {
+        if (response.ok)
+          throw new Error(
+            'The service returned an unreadable response. Please try again.',
+          );
+        return {
+          error:
+            response.status === 429
+              ? 'Too many live requests. Wait a minute and try again. Your existing results and draft are unchanged.'
+              : 'The service could not respond. Your existing results and draft are unchanged.',
+        };
+      })) as Comparison & {
         code?: string;
         error?: string;
       };
       if (
         !response.ok &&
-        ['demo_daily_limit', 'demo_visitor_limit', 'demo_unavailable'].includes(
-          data.code ?? '',
-        )
+        (response.status === 429 ||
+          [
+            'demo_daily_limit',
+            'demo_visitor_limit',
+            'demo_unavailable',
+          ].includes(data.code ?? ''))
       ) {
         setError(
-          data.error ?? 'Live runs are temporarily unavailable. Your case and comparison are unchanged. The recorded benchmark is still available.',
+          data.error ??
+            'Live runs are temporarily unavailable. Your case and comparison are unchanged. The recorded benchmark is still available.',
         );
         return;
       }
@@ -214,14 +229,17 @@ export function ModelComparison({
                   <td>
                     {model.summary.correct}/{model.summary.attempted} (
                     {Math.round(
-                      (model.summary.correct / (model.summary.attempted || 1)) * 100,
+                      (model.summary.correct / (model.summary.attempted || 1)) *
+                        100,
                     )}
                     %)
                   </td>
                   <td>{seconds(model.summary.medianMs)}</td>
                   <td>{seconds(model.summary.p95Ms)}</td>
                   <td>{model.summary.failed}</td>
-                  <td>{model.summary.unmeasured} / {model.summary.unavailable}</td>
+                  <td>
+                    {model.summary.unmeasured} / {model.summary.unavailable}
+                  </td>
                   <td>
                     {money(model.costUsd)}
                     {!model.costComplete && ' · partial'}
@@ -234,7 +252,8 @@ export function ModelComparison({
         <p className="source-meta">
           p95: 95% of successful calls finished within this time. Small local
           sample, including network time; not a general accuracy or
-          production-speed guarantee. Costs cover reported usage only. Never-sent cases are excluded from API attempts and failures.
+          production-speed guarantee. Costs cover reported usage only.
+          Never-sent cases are excluded from API attempts and failures.
         </p>
         <details className="benchmark-method">
           <summary>Method, labels and individual results</summary>

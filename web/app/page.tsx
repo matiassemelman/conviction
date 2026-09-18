@@ -55,18 +55,33 @@ export default function Home() {
         body: JSON.stringify({ notes: nextNotes }),
         signal: AbortSignal.timeout(50000),
       });
-      const data = (await response.json()) as CaseResult & {
+      const data = (await response.json().catch(() => {
+        if (response.ok)
+          throw new Error(
+            'The service returned an unreadable response. Please try again.',
+          );
+        return {
+          error:
+            response.status === 429
+              ? 'Too many live requests. Wait a minute and try again. Your existing results and draft are unchanged.'
+              : 'The service could not respond. Your existing results and draft are unchanged.',
+        };
+      })) as CaseResult & {
         code?: string;
         error?: string;
       };
       if (
         !response.ok &&
-        ['demo_daily_limit', 'demo_visitor_limit', 'demo_unavailable'].includes(
-          data.code ?? '',
-        )
+        (response.status === 429 ||
+          [
+            'demo_daily_limit',
+            'demo_visitor_limit',
+            'demo_unavailable',
+          ].includes(data.code ?? ''))
       ) {
         setError(
-          data.error ?? 'Live runs are temporarily unavailable. Your draft and results are unchanged. The recorded benchmark is still available.',
+          data.error ??
+            'Live runs are temporarily unavailable. Your draft and results are unchanged. The recorded benchmark is still available.',
         );
         return;
       }
@@ -270,8 +285,8 @@ export default function Home() {
               <p id="note-privacy" className="source-meta">
                 {notes.length}/4 notes added. Use fictional, non-sensitive text
                 only. Notes are sent to TypeSafe for analysis, and to TypeSafe
-                and OpenAI for comparison. This demo does not save notes after
-                a refresh.
+                and OpenAI for comparison. This demo does not save notes after a
+                refresh.
               </p>
             </section>
           </div>

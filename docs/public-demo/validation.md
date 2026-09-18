@@ -30,3 +30,5 @@ Vercel CLI reported `integration_terms_acceptance_required` for the chosen free 
 - [Vercel forwarded headers](https://vercel.com/docs/headers/request-headers)
 - [Vercel WAF limits](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting)
 - [Vercel deployment protection](https://vercel.com/docs/deployment-protection/methods-to-protect-deployments/vercel-authentication)
+
+Final Standards review: 0 findings. Spec review prompted safe handling of non-JSON edge errors: 429 preserves UI state and shows a controlled retry message. Malformed successful responses are rejected safely. Final typecheck and lint pass; the production build passed before this last error-path correction. Direct anonymous GET probes still reach Vercel login; public WAF behavior remains to be verified after activation.

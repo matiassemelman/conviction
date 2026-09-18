@@ -23,3 +23,12 @@ Small shared provider transport and rubric, Jev and OpenAI adapters, determinist
 
 ## Final review
 AI Hero two-axis review of dfa640a..1a97809 independently identified the same P2: future benchmark runs with early failure counted never-sent cases as API failures. Added explicit completed/failed/unmeasured/unavailable sample states, attempted counts and separate UI reporting, with a regression test. Existing 144 successful measured answers, costs and timings are unchanged; sample statuses were added from their verified receipts. No new live benchmark was run for this correction.
+
+Both review axes independently confirmed the correction with offline early-error reproductions: three attempted calls and thirteen unmeasured cases. Zero pending findings. Final table/mobile QA repeated after the correction.
+
+## Production release
+Vercel deployment `dpl_6NBycK4KrYasW2imSeKM8bXFqSmd` reached READY; alias https://conviction-kappa.vercel.app. Uploaded code checkpoint: `53f1676`. Project Authentication was verified as `deploymentType: all` before publication.
+
+Authenticated production API smoke (three sources, three assumptions per source) completed using Jev 1.13.0, GPT-5.6 Luna and GPT-5.6 Terra. Elapsed: 473.3 ms / 3060 ms / 5562.9 ms; estimated USD: 0.000182196 / 0.00075 / 0.0075. This is one deployment check, separate from the frozen benchmark. Full safe receipt: `production-smoke.json`. Unauthenticated POST to `/api/compare` returned 401. The browser redirects to Vercel login; local browser interaction and layout were validated, while authenticated production browser review awaits the owner session.
+
+Both configured keys were scanned against every Git revision and the client build with no matches. Vercel upload exclusions omit local env, build output and dependencies; only server-side encrypted environment variables supply provider credentials.

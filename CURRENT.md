@@ -1,19 +1,16 @@
 # Current
 
-Stage: MVP plus inspectable execution trace implemented, reviewed and privately deployed on 2026-09-18.
-Owner: README.md. Specs: .scratch/mvp/spec.md and .scratch/trace/spec.md.
-App: https://conviction-matias.matiassemelman.chatgpt.site
+Stage: MVP, execution traces and Jev/Luna/Terra comparison implemented, reviewed and privately deployed on 2026-09-18.
+Owner: README.md. Specs: .scratch/mvp/spec.md, .scratch/trace/spec.md and .scratch/comparison/spec.md.
+App: https://conviction-kappa.vercel.app
 Repository: https://github.com/matiassemelman/conviction (private, main).
-Scope: self-serve fictional case, three assumptions, prepared sources plus up to four text notes; English UI; owner-only access.
-Jev: real planning/design/review/delivery judgments plus live product evaluation. Source-isolated requests fix cross-source contamination discovered in browser QA. Development corpus 11/11; 21 deterministic tests, lint/typecheck/build pass.
-Review: initial MVP closed. Trace review found two P2 issues (first-failure Reset and interrupted response-body classification), both corrected and independently closed. Evidence: docs/validation.md, docs/trace-validation.md and docs/jev/.
-Deployment: Sites version 2; deployment succeeded using environment revision 1. Published trace browser run completed with three real Jev calls in 1.28 s, with source details visible. Added-note before/after trace and failure reset passed locally. Unauthenticated inference returned 401. Access confirms one owner, no groups or external viewers.
-Credential: ignored local environment files and Sites secret store only; absent from Git history and deployment archive. No credential committed.
-Trace: latest-run request bodies, validated answers, shared timing bars, HTTP attempts, reported usage and deterministic before/after rules. No durable history or hidden reasoning.
-Next: owner acceptance of the fictional case and interaction. Public sharing, arbitrary uploads and real company evidence remain out of scope.
+Scope: fictional self-serve case, three assumptions, three original sources plus up to four notes; English UI; private Vercel Authentication on all deployments.
 
-## Comparison implementation — 2026-09-18
+Comparison: Jev, GPT-5.6 Luna and GPT-5.6 Terra use the same source-isolated rubric and deterministic aggregation. Separate results, traces, bounded retries/timeouts and estimated USD costs; failed providers do not erase successful peers. No fallback model. OpenAI reasoning disabled and storage disabled.
+Benchmark: 16 frozen synthetic cases, three repetitions; all models 48/48, zero API failures. This small ceiling does not establish equal general accuracy. Jev has the lowest median and estimated cost in this sample. See docs/comparison/validation.md, frozen labels and raw receipts.
 
-Luna and Terra access is resolved and actual model calls pass. Comparison is implemented with real per-provider traces, independent failures and estimated costs. Frozen benchmark: 16 distinct synthetic cases × three repetitions; each model 48/48, no failures. See docs/comparison/validation.md for costs, latency and limits.
-
-Runtime migrated to Next.js for Vercel. Both provider keys are configured in ignored local files and encrypted Vercel variables. The new Vercel project uses Authentication on all deployments. Local checks pass; final comparison code review and deployment verification are underway. Previous Sites release above is unchanged.
+Validation: 33 tests, lint, typecheck and Next.js production build pass. Browser checks covered the added note, all-model success, a real partial timeout, reset, request/response traces and mobile layout. Both final AI Hero review axes identified one shared P2 (never-sent benchmark cases counted as failures); corrected and independently closed.
+Deployment: Vercel dpl_6NBycK4KrYasW2imSeKM8bXFqSmd, code checkpoint 53f1676, production READY. Authenticated production API smoke completed with all three requested models and three sources each; unauthenticated POST returned 401. Receipt: docs/comparison/production-smoke.json.
+Credential: ignored local files (0600), encrypted Vercel production/preview environment. Configured keys absent from Git history and client build. Do not commit or expose credentials.
+Runtime: standard Next.js; old Sites manifest archived in docs/sites-hosting-archive.json. Previous https://conviction-matias.matiassemelman.chatgpt.site remains an older trace-only release and was not republished.
+Next: owner acceptance. Browser opens Vercel login until the owner signs in. Public sharing, arbitrary uploads and real company evidence remain out of scope.

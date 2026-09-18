@@ -1,7 +1,7 @@
 # Current
 
 Stage: Guided first review, execution traces and Jev/Luna/Terra comparison implemented, reviewed and publicly deployed on 2026-09-18.
-Current deployment: dpl_C6oFmMNYw5Uh48mmQQKXBrR2QkEG, code checkpoint 963cf4d, READY.
+Current deployment: dpl_BV6GKWbNRHVvQsgvz2tL8c8WZzP3, code checkpoint c868c78, READY. Header label “Evidence workspace” removed at user request; typecheck, production build and published browser check passed.
 Owner: README.md. Specs: .scratch/mvp/spec.md, .scratch/trace/spec.md and .scratch/comparison/spec.md.
 App: https://conviction-kappa.vercel.app
 Repository: https://github.com/matiassemelman/conviction (public, main).

@@ -15,4 +15,4 @@ Scope: .scratch/trace/spec.md. Implementation checkpoint: 2c8b538; two independe
 ## Limits
 Latest trace only; no durable history, export, streaming progress, distributed tracing or hidden reasoning. Payload text is visible to the current private-site viewer. Only whitelisted response fields are retained; no authorization headers or raw provider errors. Usage can omit failed/retried consumption and is explicitly labeled partial. Semantic rubric is unchanged; the earlier synthetic corpus was not rerun as a general accuracy claim.
 
-Publication verification is recorded in CURRENT.md after deployment.
+Publication: Sites version 2 succeeded (environment revision 1). Published browser run 1074e1cb-932b-4dd2-900a-e5d8991a96a9 completed in 1.28 s with three sources, 4338 input / 472 output tokens, model jev-1.13.0; source detail expanded and visually checked. Unauthenticated POST returned 401. Access remains owner-only. Full Git history and deployment archive scanned without finding the configured credential.

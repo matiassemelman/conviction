@@ -4,7 +4,7 @@ import re, subprocess
 from pathlib import Path
 root=Path(__file__).resolve().parents[1]
 secret_file=root/'web/.env.local'
-secrets=[line.split('=',1)[1].strip().encode() for line in secret_file.read_text().splitlines() if '=' in line and line.split('=',1)[0].endswith(('API_KEY','PASSWORD'))] if secret_file.exists() else []
+secrets=[line.split('=',1)[1].strip().encode() for line in secret_file.read_text().splitlines() if '=' in line and line.split('=',1)[0].endswith(('API_KEY','PASSWORD','TOKEN','SECRET'))] if secret_file.exists() else []
 paths=subprocess.check_output(['git','diff','--cached','--name-only','--diff-filter=ACM','-z'],cwd=root).split(b'\0')
 for raw in filter(None,paths):
  name=raw.decode(); data=subprocess.check_output(['git','show',':'+name],cwd=root)

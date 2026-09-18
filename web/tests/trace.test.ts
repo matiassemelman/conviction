@@ -56,26 +56,31 @@ void test('a failed run retains sibling spans, marks unsent sources skipped, and
     }),
   });
   let calls = 0;
-  const response = await handleAssessment(request, (pairs, trace) =>
-    evaluatePairs(
-      pairs,
-      'never-show-key',
-      async (_url, init) => {
-        calls++;
-        const body = init!.body as string;
-        const data = JSON.parse(body) as {
-          state: { pairs: { source: string }[] };
-        };
-        if (
-          data.state.pairs[0].source.startsWith(
-            'As of September 15, 2026, Atlas',
+  const response = await handleAssessment(
+    request,
+    (pairs, trace) =>
+      evaluatePairs(
+        pairs,
+        'never-show-key',
+        async (_url, init) => {
+          calls++;
+          const body = init!.body as string;
+          const data = JSON.parse(body) as {
+            state: { pairs: { source: string }[] };
+          };
+          if (
+            data.state.pairs[0].source.startsWith(
+              'As of September 15, 2026, Atlas',
+            )
           )
-        )
-          return new Response('never-show-key provider debug', { status: 401 });
-        return successful(body);
-      },
-      trace,
-    ),
+            return new Response('never-show-key provider debug', {
+              status: 401,
+            });
+          return successful(body);
+        },
+        trace,
+      ),
+    async () => null,
   );
   assert.equal(response.status, 502);
   const text = await response.text();
@@ -141,19 +146,22 @@ void test('invalid answer preserves safe usage and HTTP status without exposing 
     headers: { origin: 'http://localhost', 'content-type': 'application/json' },
     body: '{"notes":[]}',
   });
-  const response = await handleAssessment(request, (pairs, trace) =>
-    evaluatePairs(
-      pairs,
-      'key',
-      async () =>
-        Response.json({
-          model: 'jev-test',
-          answers: {},
-          usage: { input_tokens: 7, output_tokens: 2 },
-          debug: 'sensitive diagnostic',
-        }),
-      trace,
-    ),
+  const response = await handleAssessment(
+    request,
+    (pairs, trace) =>
+      evaluatePairs(
+        pairs,
+        'key',
+        async () =>
+          Response.json({
+            model: 'jev-test',
+            answers: {},
+            usage: { input_tokens: 7, output_tokens: 2 },
+            debug: 'sensitive diagnostic',
+          }),
+        trace,
+      ),
+    async () => null,
   );
   const text = await response.text();
   assert.ok(!text.includes('sensitive diagnostic'));
@@ -193,6 +201,7 @@ for (const [label, response, expected] of [
       }),
       (pairs, trace) =>
         evaluatePairs(pairs, 'key', async () => response(), trace),
+      async () => null,
     );
     assert.equal(result.status, 502);
     const data = (await result.json()) as {

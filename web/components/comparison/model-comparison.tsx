@@ -42,7 +42,21 @@ export function ModelComparison({
         body: JSON.stringify({ notes }),
         signal: AbortSignal.timeout(50000),
       });
-      const data = (await response.json()) as Comparison & { error?: string };
+      const data = (await response.json()) as Comparison & {
+        code?: string;
+        error?: string;
+      };
+      if (
+        !response.ok &&
+        ['demo_daily_limit', 'demo_visitor_limit', 'demo_unavailable'].includes(
+          data.code ?? '',
+        )
+      ) {
+        setError(
+          data.error ?? 'Live runs are temporarily unavailable. Your case and comparison are unchanged. The recorded benchmark is still available.',
+        );
+        return;
+      }
       if (!response.ok || !Array.isArray(data.runs) || data.runs.length !== 3)
         throw new Error(
           'Comparison could not finish. Your case and any previous comparison are preserved. Try again.',

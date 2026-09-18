@@ -55,7 +55,21 @@ export default function Home() {
         body: JSON.stringify({ notes: nextNotes }),
         signal: AbortSignal.timeout(50000),
       });
-      const data = (await response.json()) as CaseResult & { error?: string };
+      const data = (await response.json()) as CaseResult & {
+        code?: string;
+        error?: string;
+      };
+      if (
+        !response.ok &&
+        ['demo_daily_limit', 'demo_visitor_limit', 'demo_unavailable'].includes(
+          data.code ?? '',
+        )
+      ) {
+        setError(
+          data.error ?? 'Live runs are temporarily unavailable. Your draft and results are unchanged. The recorded benchmark is still available.',
+        );
+        return;
+      }
       if (data.trace) {
         receivedTrace = true;
         setTrace(data.trace);
@@ -139,6 +153,10 @@ export default function Home() {
             </Button>
           </div>
         </div>
+        <p className="source-meta">
+          Public demo · Live runs share a daily allowance and have a per-network
+          limit. The recorded benchmark is always available without a live run.
+        </p>
         {error && (
           <div className="notice error" role="alert">
             {error}
@@ -224,8 +242,8 @@ export default function Home() {
                 onChange={(e) => setDraft(e.target.value)}
                 maxLength={2000}
                 disabled={locked || notes.length >= 4}
-                placeholder="Paste an interview excerpt, observation or evidence summary…"
-                aria-describedby="note-limit"
+                placeholder="Add a fictional interview excerpt, observation or evidence summary…"
+                aria-describedby="note-limit note-privacy"
               />
               <div className="note-footer">
                 <Button
@@ -249,9 +267,11 @@ export default function Home() {
               >
                 Add note & analyze
               </Button>
-              <p className="source-meta">
-                {notes.length}/4 notes added. Sent to TypeSafe for analysis.
-                This demo does not save notes after a refresh.
+              <p id="note-privacy" className="source-meta">
+                {notes.length}/4 notes added. Use fictional, non-sensitive text
+                only. Notes are sent to TypeSafe for analysis, and to TypeSafe
+                and OpenAI for comparison. This demo does not save notes after
+                a refresh.
               </p>
             </section>
           </div>

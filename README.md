@@ -50,7 +50,7 @@ We used the project-local AI Hero workflow for specifications, implementation an
 
 ## Run locally
 
-Requires Node 24 and npm. From `web/`, run `npm ci`, copy `.env.example` to `.env.local`, set your TypeSafe and OpenAI keys there, and run `npm run dev`. Use the printed local URL. Never commit `.dev.vars` or `.env*` files.
+Requires Node 24 and npm. From `web/`, run `npm ci`, copy `.env.example` to `.env.local`, set your TypeSafe and OpenAI keys plus the quota-store credentials there, and run `npm run dev`. Use the printed local URL. Never commit `.dev.vars` or `.env*` files.
 
 1. Click **Analyze with Jev**.
 2. Expand **Execution trace** to inspect timings, parallel requests, exact request bodies and validated Jev answers. Open **How the application used these answers** for the deterministic rules and before/after changes.
@@ -78,6 +78,16 @@ Click **Compare current case** to run Jev, Luna and Terra on the current sources
 The recorded benchmark uses 16 new synthetic cases, four per relation, frozen before the first run and repeated three times. All three models matched 48/48 labels. That ceiling on a small synthetic set does not establish equal general accuracy. Jev was faster by median and cheaper in this sample. See [method and results](docs/comparison/validation.md), [frozen labels](web/evaluation/holdout.json), and [raw receipts](docs/comparison/receipts.json).
 
 To rerun the benchmark explicitly (144 paid provider calls), run `node --env-file=.env.local --experimental-strip-types scripts/benchmark.ts` from `web/`. Page loads never rerun it.
+
+## Public sharing rollout
+
+Public sharing is authorized and the usage guard is implemented. Activation currently awaits the quota-store setup; see [current state](CURRENT.md) and [rollout evidence](docs/public-demo/validation.md).
+
+Both live actions share a centralized allowance of 20 executions per UTC day, plus five per network in each fixed 10-minute window. A comparison counts as one execution and may call all three models. Reservations count even if a provider later fails. When a limit is reached, visitors can still read the case and recorded benchmark. These quotas limit calls; they are not a guaranteed dollar billing cap.
+
+The quota store uses Upstash Redis’s free plan with automatic upgrades and eviction disabled. Set `KV_REST_API_URL` and `KV_REST_API_TOKEN` only in local ignored/server environment variables. Missing or unavailable quota storage pauses live inference. `DEMO_DAILY_LIMIT` accepts 1–100 (default 20). `DISABLE_LIVE_ANALYSIS=1` stops live runs; environment changes require redeployment. Both routes reserve capacity after request validation and before contacting providers.
+
+Production must retain Vercel protection on preview and immutable deployment URLs, so earlier versions without admission control cannot become public through an old link. Only the current production alias is intended for anonymous access.
 
 ## Checks
 

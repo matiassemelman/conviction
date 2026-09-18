@@ -1,6 +1,7 @@
 import { AssessmentFailure } from '../trace.ts';
 import { assessCase } from '../assessment.ts';
 import type { Evaluate } from '../assessment.ts';
+import { reserveDemoRun } from './demo-limits.ts';
 const response = (body: unknown, status = 200) =>
   Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
 async function readNotes(request: Request): Promise<string[]> {
@@ -57,6 +58,7 @@ async function readNotes(request: Request): Promise<string[]> {
 export async function handleAnalysisRequest(
   request: Request,
   analyze: (notes: string[]) => Promise<unknown>,
+  admit: (request: Request) => Promise<Response | null> = reserveDemoRun,
 ): Promise<Response> {
   const origin = request.headers.get('origin');
   if (!origin || origin !== new URL(request.url).origin)
@@ -73,6 +75,8 @@ export async function handleAnalysisRequest(
       400,
     );
   }
+  const rejected = await admit(request);
+  if (rejected) return rejected;
   try {
     return response(await analyze(notes));
   } catch (error) {
@@ -90,6 +94,11 @@ export async function handleAnalysisRequest(
 export function handleAssessment(
   request: Request,
   evaluate: Evaluate,
+  admit?: (request: Request) => Promise<Response | null>,
 ): Promise<Response> {
-  return handleAnalysisRequest(request, (notes) => assessCase(notes, evaluate));
+  return handleAnalysisRequest(
+    request,
+    (notes) => assessCase(notes, evaluate),
+    admit,
+  );
 }

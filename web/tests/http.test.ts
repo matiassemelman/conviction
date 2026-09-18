@@ -45,9 +45,13 @@ void test('upstream details never leak through an HTTP error', async () => {
     headers: { origin: 'http://localhost', 'content-type': 'application/json' },
     body: '{"notes":[]}',
   });
-  const result = await handleAssessment(request, async () => {
-    throw new Error('private provider diagnostic');
-  });
+  const result = await handleAssessment(
+    request,
+    async () => {
+      throw new Error('private provider diagnostic');
+    },
+    async () => null,
+  );
   assert.equal(result.status, 502);
   assert.equal(result.headers.get('cache-control'), 'no-store');
   assert.ok(!(await result.text()).includes('private provider diagnostic'));
@@ -58,15 +62,19 @@ void test('valid bounded note is included as a source in a successful response',
     headers: { origin: 'http://localhost', 'content-type': 'application/json' },
     body: '{"notes":["  reported observation  "]}',
   });
-  const result = await handleAssessment(request, async (pairs) => ({
-    model: 'test-double',
-    judgments: pairs.map((pair) => ({
-      ...pair,
-      relation: 'insufficient',
-      confidence: 0.5,
-    })),
-    usage: { input_tokens: 1, output_tokens: 1 },
-  }));
+  const result = await handleAssessment(
+    request,
+    async (pairs) => ({
+      model: 'test-double',
+      judgments: pairs.map((pair) => ({
+        ...pair,
+        relation: 'insufficient',
+        confidence: 0.5,
+      })),
+      usage: { input_tokens: 1, output_tokens: 1 },
+    }),
+    async () => null,
+  );
   assert.equal(result.status, 200);
   const data = (await result.json()) as { sources: { text: string }[] };
   assert.equal(data.sources.at(-1)?.text, 'reported observation');

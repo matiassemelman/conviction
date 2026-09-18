@@ -14,3 +14,9 @@ Deployment: Vercel dpl_6NBycK4KrYasW2imSeKM8bXFqSmd, code checkpoint 53f1676, pr
 Credential: ignored local files (0600), encrypted Vercel production/preview environment. Configured keys absent from Git history and client build. Do not commit or expose credentials.
 Runtime: standard Next.js; old Sites manifest archived in docs/sites-hosting-archive.json. Previous https://conviction-matias.matiassemelman.chatgpt.site remains an older trace-only release and was not republished.
 Next: owner acceptance. Browser opens Vercel login until the owner signs in. Public sharing, arbitrary uploads and real company evidence remain out of scope.
+
+## Public sharing preparation
+
+User authorized anonymous sharing with paid-inference limits on 2026-09-18. New admission guard uses atomic centralized daily/per-network quotas, blocks before providers on any store failure, and preserves UI state. Default 20 executions/day and 5/network/10 minutes; optional preference question remains unanswered. 39 tests and real Redis concurrency checks pass. See .scratch/public-demo/spec.md and docs/public-demo/validation.md.
+
+Blocking external prerequisite: Vercel requires owner acceptance of Upstash marketplace terms before provisioning the free counter store. No resource was created or paid subscription enabled. Firewall burst rule staged; production alias remains private. Complete setup, final review, deployment and anonymous browser/API checks before marking sharing active.

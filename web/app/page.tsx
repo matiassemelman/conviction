@@ -144,7 +144,6 @@ export default function Home() {
           Conviction
         </div>
         <div className="topbar-links">
-          <small>Evidence workspace</small>
           <a
             href="https://github.com/matiassemelman/conviction"
             target="_blank"

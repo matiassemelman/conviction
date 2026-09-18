@@ -9,10 +9,13 @@ A small venture diligence workspace powered by TypeSafe Jev. Inspect three assum
 Requires Node 24 and npm. From `web/`, run `npm ci`, copy `.env.example` to `.dev.vars`, set your TypeSafe key there, and run `npm run dev`. Use the printed local URL. Never commit `.dev.vars` or `.env*` files. To run the live evaluation script, place the same key in the ignored `.env.local` file.
 
 1. Click **Analyze with Jev**.
-2. Inspect the payment contradiction and the weekly-usage evidence gap.
-3. Select **Usage becomes a weekly habit**.
-4. Click **Use a fictional activity note**, then **Add note & analyze**.
-5. Inspect the changed assessment and original source trail.
+2. Expand **Execution trace** to inspect timings, parallel requests, exact request bodies and validated Jev answers. Open **How the application used these answers** for the deterministic rules and before/after changes.
+3. Inspect the payment contradiction and the weekly-usage evidence gap.
+4. Select **Usage becomes a weekly habit**.
+5. Click **Use a fictional activity note**, then **Add note & analyze**.
+6. Inspect the changed assessment and original source trail.
+
+The latest execution trace stays visible after fast runs and includes partial failures. It records observable events, not hidden model reasoning. Reported token usage is incomplete when requests fail or retry; credentials and authorization headers are excluded. Trace details live only in component memory and clear on reset or refresh. See [trace validation](docs/trace-validation.md).
 
 Notes live only in browser memory and are sent to TypeSafe when you analyze. Refreshing or resetting clears them. This is a fictional demonstration, not an investment recommendation. Supported by a source does not mean independently verified.
 

@@ -158,8 +158,17 @@ async function evaluateBatch(
             span.errorCode = 'http_error';
             throw new Error(`TypeSafe request failed (${response.status}).`);
           }
+          let raw: unknown;
+          try {
+            raw = await response.json();
+          } catch (error) {
+            span.errorCode =
+              error instanceof SyntaxError
+                ? 'invalid_response'
+                : 'network_or_timeout';
+            throw error;
+          }
           span.errorCode = 'invalid_response';
-          const raw: unknown = await response.json();
           span.reportedUsage = reportedUsage(raw);
           const result = decode(raw, pairs);
           span.response = {

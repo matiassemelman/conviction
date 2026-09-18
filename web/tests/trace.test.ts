@@ -165,3 +165,40 @@ void test('invalid answer preserves safe usage and HTTP status without exposing 
   assert.equal(data.trace.sources[0].response, undefined);
   assert.equal(data.trace.usage.input_tokens, 21);
 });
+
+for (const [label, response, expected] of [
+  [
+    'interrupted body',
+    () =>
+      new Response(
+        new ReadableStream({
+          start(controller) {
+            controller.error(new DOMException('interrupted', 'AbortError'));
+          },
+        }),
+      ),
+    'network_or_timeout',
+  ],
+  ['malformed JSON', () => new Response('{broken'), 'invalid_response'],
+] as const) {
+  void test(`${label} retains HTTP status and correct error category`, async () => {
+    const result = await handleAssessment(
+      new Request('http://localhost/api/assess', {
+        method: 'POST',
+        headers: {
+          origin: 'http://localhost',
+          'content-type': 'application/json',
+        },
+        body: '{"notes":[]}',
+      }),
+      (pairs, trace) =>
+        evaluatePairs(pairs, 'key', async () => response(), trace),
+    );
+    assert.equal(result.status, 502);
+    const data = (await result.json()) as {
+      trace: import('../lib/trace.ts').RunTrace;
+    };
+    assert.equal(data.trace.sources[0].errorCode, expected);
+    assert.equal(data.trace.sources[0].attempts[0].httpStatus, 200);
+  });
+}

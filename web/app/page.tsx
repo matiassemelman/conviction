@@ -117,7 +117,10 @@ export default function Home() {
               variant="outline"
               className="secondary h-auto"
               onClick={reset}
-              disabled={busy || (!result && !draft)}
+              disabled={
+                busy ||
+                (!result && !draft && !trace && !error && !traceUnavailable)
+              }
             >
               Reset case
             </Button>

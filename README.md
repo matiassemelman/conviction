@@ -18,7 +18,7 @@ Notes live only in browser memory and are sent to TypeSafe when you analyze. Ref
 
 `web/app/page.tsx` owns the interaction. `web/lib/assessment.ts` aggregates source judgments and selects authored follow-up questions. `web/lib/server/jev.ts` calls the official TypeSafe HTTP API, checks the typed response and limits each request to one source. `web/app/api/assess/route.ts` keeps credentials on the server.
 
-Each source gets one request containing the three independent assumption questions. Up to three requests run concurrently, with a 40-second overall timeout. Sources are never placed together in one provider request: browser QA caught cross-source contamination in the earlier batch design. At most four notes of 2000 characters are accepted; all existing sources remain visible. No database, vector store, autonomous agents or second model.
+Each source gets one request containing the three independent assumption questions. Up to three requests run concurrently, with a 40-second overall timeout. At most seven logical source evaluations (21 judgments) are needed; one retry per source on 429/529 permits at most 14 HTTP attempts (42 transmitted questions). Sources are never placed together in one provider request: browser QA caught cross-source contamination in the earlier batch design. At most four notes of 2000 characters are accepted; all existing sources remain visible. No database, vector store, autonomous agents or second model.
 
 The deployment is owner-private through Sites. The request origin check and per-isolate concurrency guard are defense in depth, not a public API authentication system. Do not expose this paid-inference endpoint publicly without adding appropriate access and usage controls.
 

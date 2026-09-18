@@ -57,9 +57,11 @@ export default function Home() {
       if (addNote) setDraft('');
     } catch (err) {
       setError(
-        err instanceof Error && err.name !== 'TimeoutError'
-          ? err.message
-          : 'Analysis timed out. Your draft and previous results are unchanged. Try again.',
+        err instanceof TypeError
+          ? 'Could not reach the analysis service. Your draft and previous results are unchanged. Try again.'
+          : err instanceof Error && err.name !== 'TimeoutError'
+            ? err.message
+            : 'Analysis timed out. Your draft and previous results are unchanged. Try again.',
       );
     } finally {
       setBusy(false);

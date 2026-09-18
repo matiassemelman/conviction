@@ -121,3 +121,38 @@ void test('one source cannot contaminate the judgment attributed to another sour
     });
   });
 });
+void test('seven source evaluations allow at most fourteen attempts with one bounded retry', async () => {
+  const all = Array.from({ length: 7 }, (_, i) => ({
+    assumption: assumptions[0],
+    source: { ...baseSources[0], id: `s${i}`, text: `Independent source ${i}` },
+  }));
+  const counts = new Map<string, number>();
+  let total = 0;
+  const result = await evaluatePairs(all, 'test', async (_url, init) => {
+    const body = init?.body as string;
+    const count = (counts.get(body) ?? 0) + 1;
+    counts.set(body, count);
+    total++;
+    if (count === 1) return new Response('', { status: 429 });
+    return Response.json({
+      model: 'jev-test',
+      answers: {
+        relation_0: {
+          type: 'choice',
+          choice: 'insufficient',
+          confidence: 1,
+          probabilities: {
+            supports: 0,
+            contradicts: 0,
+            mixed: 0,
+            insufficient: 1,
+          },
+        },
+      },
+      usage: { input_tokens: 1, output_tokens: 1 },
+    });
+  });
+  assert.equal(total, 14);
+  assert.equal(result.judgments.length, 7);
+  assert.ok([...counts.values()].every((count) => count === 2));
+});

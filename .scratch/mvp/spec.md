@@ -31,7 +31,7 @@ An interactive English workspace for one clearly fictional startup, three fixed 
 - No silent replay. All analysis initiated explicitly, live results labeled; provider failures remain errors. Reset does not call provider.
 - Secret only in ignored local environment files and private hosting secret store. No secret in client code, artifacts, Git history, logs or Jev state.
 - Restrict POST origin, enforce streaming body limit, schema checks, timeout, bounded retries/concurrency; private hosting access preserved. No public paid-inference endpoint.
-- Re-run evidence when adding notes; complete analysis bounded by at most 21 judgments across at most seven source-isolated requests, at most three concurrent. Any latency/cost claims require actual measurement.
+- Re-run evidence when adding notes; complete analysis bounded by at most 21 logical judgments across at most seven source-isolated evaluations, at most three concurrent. A single retry on 429/529 permits up to 14 HTTP attempts / 42 transmitted questions in the worst case; the entire analysis still has a 40-second deadline. Any latency/cost claims require actual measurement.
 
 ## Testing Decisions
 Use the end-to-end authorization to choose test seams without a new approval gate: assess-case behavior with an injected provider; HTTP input/error behavior; browser flow. Test observable output, errors, conflict preservation and freshness. Run a separate labeled live Jev corpus; do not confuse mocked tests with model accuracy. TDD in vertical slices where applicable. Browser QA is required by project contract. Jev advises planning, source semantics, UI wording and final review classification; deterministic tests and independent reviewers remain the correctness evidence.
